@@ -18,7 +18,8 @@ export class VoteService {
     async createVote(createDto: CreatVoteDto, studentId: string) {
         try {
             console.log({ ...createDto, studentId: studentId });
-
+            console.log("Hello");
+            
             const objectId = new Types.ObjectId(createDto.courseId);
             const course = await this.courseModel.findById(objectId);
             if (!course) {

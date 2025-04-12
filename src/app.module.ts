@@ -13,28 +13,28 @@ import { StudentModule } from "./modules/student/student.module";
 import { VoteModule } from "./modules/votes/vote.module";
 
 @Module({
-    imports: [
-        MongooseModule.forRoot(
-            "mongodb://localhost:27017/student_votes"
-        ),
-        ConfigModule.forRoot({
-          isGlobal: true, 
-          envFilePath: '.env', 
-        }),    
-        EmpModule,
-        StudentModule,
-        VoteModule,
-        CourseModule,
-        PrerModule,
-        MarkModule,
-        AuthModule
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    MongooseModule.forRoot(
+      process.env.MONGO_URI
+    ),
+    EmpModule,
+    StudentModule,
+    VoteModule,
+    CourseModule,
+    PrerModule,
+    MarkModule,
+    AuthModule
 
-    ],
-    providers: [
-        {
-          provide: APP_GUARD,
-          useClass: RolesGuard,
-        },
-      ],
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule { }
