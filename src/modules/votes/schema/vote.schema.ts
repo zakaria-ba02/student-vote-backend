@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { Course } from "src/modules/course/schema/course.schema";
 import { Student } from "src/modules/student/schema/student.schema";
-@Schema({timestamps:true})
+@Schema({ timestamps: true })
 export class Vote extends Document {
     @Prop({ required: true, ref: Student.name })
     studentId: string;
@@ -10,8 +10,8 @@ export class Vote extends Document {
     courseId: string;
     @Prop({ required: true })
     vote: string;
-    
+
     @Prop()
-    createdAt:Date;
+    createdAt: Date;
 }
 export const VoteSchema = SchemaFactory.createForClass(Vote);

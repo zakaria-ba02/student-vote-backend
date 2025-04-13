@@ -10,7 +10,6 @@ import { Course, CourseSchema } from "../course/schema/course.schema";
     imports: [
         MongooseModule.forFeature([
             { name: Vote.name, schema: VoteSchema },
-            {name:Student.name, schema:StudentSchema},
             {name:Course.name,schema:CourseSchema}
         ])
     ],

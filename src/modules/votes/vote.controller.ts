@@ -15,7 +15,7 @@ export class VoteController {
     constructor(private readonly voteService: VoteService) { }
 
     @Post()
-    async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
+    async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {        
         return await this.voteService.createVote(createVoteDto, studentId);
     }
 
