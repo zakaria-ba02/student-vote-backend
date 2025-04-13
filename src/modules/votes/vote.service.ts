@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { console } from "inspector/promises";
 import { Model, Types } from "mongoose";
 import { Course } from "../course/schema/course.schema";
 import { Student } from "../student/schema/student.schema";
@@ -17,6 +16,9 @@ export class VoteService {
 
     async createVote(createDto: CreatVoteDto, studentId: string) {
         try {
+            console.log("HJ");
+            console.log(createDto, studentId);
+
             const objectId = new Types.ObjectId(createDto.courseId);
             const course = await this.courseModel.find({
                 _id: objectId,
@@ -25,18 +27,20 @@ export class VoteService {
             if (!course) {
                 throw new BadRequestException("Course with ID not found or not opened")
             }
-            const existVote = await this.voteModel.find({
+            const existVote = await this.voteModel.findOne({
                 studentId: studentId,
                 courseId: createDto.courseId
             });
+
             if (existVote) {
                 throw new ConflictException("This Student is already vote")
             }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
             return await vote.save();
         } catch (error) {
-            throw new BadRequestException("Error in voting ")
+            throw error
         }
+
     }
 
 
