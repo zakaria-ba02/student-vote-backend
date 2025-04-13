@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { GetStudentId } from "src/common/decoraters";
 import { Roles } from "src/common/decoraters/roles";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
@@ -41,16 +41,18 @@ export class VoteController {
         return await this.voteService.deleteVote(id);
     }
 
-    @Roles(Role.ADMIN) // السماح فقط لرئيس القسم
-    @Post("start-voting")
-    async startVoting() {
-        return await this.voteService.startVoting();
-    }
+   
+  @Get('course-votes')
+  async getAllVotedCourse(
+    @Query('courseId') courseId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string
+  ) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
+    return await this.voteService.getAllVotedCourse(courseId, start, end);
+  
+}
 
-    @Roles(Role.ADMIN)
-    @Post("stop-voting")
-    async stopVoting() {
-        return await this.voteService.stopVoting();
-    }
 }

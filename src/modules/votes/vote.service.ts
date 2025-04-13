@@ -25,11 +25,11 @@ export class VoteService {
             if (!course) {
                 throw new BadRequestException("Course with ID not found or not opened")
             }
-            const existVote=await this.voteModel.find({
-                studentId:studentId,
-                courseId:createDto.courseId
+            const existVote = await this.voteModel.find({
+                studentId: studentId,
+                courseId: createDto.courseId
             });
-            if(existVote){
+            if (existVote) {
                 throw new ConflictException("This Student is already vote")
             }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
@@ -50,15 +50,16 @@ export class VoteService {
     }
 
 
-    async getAllVotedCourse(courseId:string){
+    async getAllVotedCourse(courseId: string, startDate: Date, endDate: Date) {
         return await this.voteModel.find({
             courseId,
-            createdAt:{
-                $lte:new Date(),  //! THIS DATE SHOULD BE END DATE 
-                $gte:new Date() //! THIS DATE SHOULD BE START DATE 
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
             }
         }).exec();
     }
+
 
     async getMyVotedCourse(studentId: string) {
         try {
@@ -96,22 +97,6 @@ export class VoteService {
     }
 
 
-    async startVoting() {
-        try {
-            await this.voteModel.updateMany({}, { isVotingOpen: true });
-            return { message: "Voting has started successfully" };
-        } catch (error) {
-            throw new BadRequestException("Error in starting voting");
-        }
-    }
 
-    async stopVoting() {
-        try {
-            await this.voteModel.updateMany({}, { isVotingOpen: false });
-            return { message: "Voting has stopped successfully" };
-        } catch (error) {
-            throw new BadRequestException("Error in stopping voting");
-        }
-    }
 
 }
