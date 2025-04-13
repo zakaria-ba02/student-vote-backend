@@ -24,8 +24,8 @@ export class StudentService {
     
     async findAllStudent() {
         try {
-            const student = await this.studentModel.find({})
-            return Student;
+            const students = await this.studentModel.find({}).exec();
+            return students;
         } catch (error) {
             throw new BadRequestException("No student found ");
         }
@@ -34,8 +34,8 @@ export class StudentService {
 
     async findStudentById(id: string) {
         try {
-            const student = await this.studentModel.findById(id)
-            return Student;
+            const student = await this.studentModel.findById(id).exec();
+            return student;
         } catch (error) {
 
             throw new BadRequestException("No student found with ID: ${id}");

@@ -14,13 +14,13 @@ import { VoteModule } from "./modules/votes/vote.module";
 
 @Module({
     imports: [
-        MongooseModule.forRoot(
-            "mongodb://localhost:27017/student_votes"
-        ),
         ConfigModule.forRoot({
           isGlobal: true, 
           envFilePath: '.env', 
-        }),    
+        }),  
+        MongooseModule.forRoot(
+          process.env.MONGO_URL
+      ),  
         EmpModule,
         StudentModule,
         VoteModule,

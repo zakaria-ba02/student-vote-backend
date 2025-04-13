@@ -1,8 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Roles } from "src/common/decoraters/roles";
+import { RolesGuard } from "src/common/guards/roles.guard";
+import { Role } from "../emp/enums/role.enum";
 import { CreateStudentDto } from "./dtos/create.dto";
 import { UpdateStudentDto } from "./dtos/update.dto";
 import { StudentService } from "./student.service";
 
+
+@UseGuards(RolesGuard)
 @Controller("student")
 export class StudentController {
     constructor(
@@ -12,6 +17,8 @@ export class StudentController {
     async createStudent(@Body() createStudentDto: CreateStudentDto) {
         return await this.studentService.createStudent(createStudentDto);
     }
+
+    // @Roles(Role.ADMIN)
     @Get()
     async getAllStudents() {
         return await this.studentService.findAllStudent();

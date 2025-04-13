@@ -41,8 +41,6 @@ export class VoteController {
         return await this.voteService.deleteVote(id);
     }
 
-
-
     @Roles(Role.ADMIN) // السماح فقط لرئيس القسم
     @Post("start-voting")
     async startVoting() {

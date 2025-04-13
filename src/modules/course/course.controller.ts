@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { YearEnum } from "src/common/enums/year.enum";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { CourseService } from "./course.service";
 import { CreateCourseDto } from "./dto/create.dto";
@@ -19,14 +20,6 @@ export class CourseCountroller {
         return await this.courseService.getAllCourse();
     }
 
-    @Get("open-course")
-    async getAllOpenCourses() {
-        return await this.courseService.getAllOpenCourse();
-    }
-
-
-
-
     @Get('find-one/:id')
     async getCourseById(@Param('id') id: string) {
         return await this.courseService.getCourseById(id);
@@ -34,9 +27,9 @@ export class CourseCountroller {
 
 
 
-    @Get('open-course')
-    async getAllOpenCourse() {
-        return await this.courseService.getAllOpenCourse()
+    @Get('open-course/:year')
+    async getAllOpenCourse(@Param("year") year:YearEnum) {
+        return await this.courseService.getAllOpenCourse(year);
     }
 
     @Patch('update/:id')
@@ -51,6 +44,11 @@ export class CourseCountroller {
 
     @Get('tree')
     async getCourseTree() {
-      return await this.courseService.getCourseTree();
+        return await this.courseService.getCourseTree();
+    }
+
+    @Post("open-course-year")
+    async openCourseOfYear(@Body("year") year: YearEnum) {
+        return this.courseService.openCourseOfYear(year);
     }
 }

@@ -1,4 +1,5 @@
-import { isString, IsString } from "class-validator";
+import { IsBoolean, IsEnum, isString, IsString } from "class-validator";
+import { YearEnum } from "src/common/enums/year.enum";
 
 export class CreateCourseDto {
     @IsString()
@@ -7,11 +8,10 @@ export class CreateCourseDto {
     teacher: string;
     @IsString()
     type: string;
-    @IsString()
-    year: string;
+    @IsEnum(YearEnum)
+    year: number;
     @IsString()
     chapter: string;
     @IsString()
     courseCode: string
-
 }

@@ -10,11 +10,9 @@ import { EmpModule } from "../emp/emp.module";
 import { Emp, EmpSchema } from "../emp/schema/emp.schema";
 
 @Module({
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
     imports: [EmpModule, StudentModule,
         JwtModule.register({
-            secret: process.env.JWT_SECRET,
+            secret:"zakaria",
             signOptions: {
                 expiresIn: "7d"
             }
@@ -29,6 +27,9 @@ import { Emp, EmpSchema } from "../emp/schema/emp.schema";
                 schema: StudentSchema
             }
         ])
-    ]
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy],
+
 })
 export class AuthModule { }

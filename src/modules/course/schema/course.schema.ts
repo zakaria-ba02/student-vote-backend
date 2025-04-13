@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { YearEnum } from "src/common/enums/year.enum";
 @Schema()
 export class Course extends Document {
     @Prop({ required: true })
@@ -8,11 +9,10 @@ export class Course extends Document {
     teacher: string;
     @Prop({ required: true })
     type: string;
-
     @Prop({ type: Boolean, default: false })
     isOpen: boolean;
-    @Prop({ required: true })
-    year: string;
+    @Prop({ enum: YearEnum, required: true })
+    year: number;
     @Prop({ required: true })
     chapter: string
     @Prop({ required: true })

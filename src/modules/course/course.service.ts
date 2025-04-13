@@ -1,6 +1,7 @@
 import { BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { YearEnum } from "src/common/enums/year.enum";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
@@ -19,7 +20,7 @@ export class CourseService {
         } catch (error) {
             console.log(error);
             throw new BadRequestException("Error in Creating Course");
-            
+
 
         }
     }
@@ -33,8 +34,8 @@ export class CourseService {
     }
 
     //! WE SHOULD MAKE CONTROLLER FOR THESE METHODS
-    async getAllOpenCourse() {
-        const courses = await this.courseModel.find({ isOpen: true }).exec();
+    async getAllOpenCourse(year:YearEnum) {
+        const courses = await this.courseModel.find({ isOpen: true,year }).exec();
         return courses;
     }
     async openCourse(id: string, isOpen: boolean) {
@@ -73,24 +74,30 @@ export class CourseService {
 
     async getCourseTree(): Promise<any[]> {
         try {
-          const tree = await this.courseModel.aggregate([
-            {
-              $match: { parent: null } // اختيار المواد الجذرية
-            },
-            {
-              $graphLookup: {
-                from: 'courses',          // تأكد من أن هذا الاسم يتطابق مع اسم المجموعة (collection) في MongoDB
-                startWith: '$_id',
-                connectFromField: '_id',
-                connectToField: 'parent',
-                as: 'children'
-              }
-            }
-          ]).exec();
-          return tree;
+            const tree = await this.courseModel.aggregate([
+                {
+                    $match: { parent: null } // اختيار المواد الجذرية
+                },
+                {
+                    $graphLookup: {
+                        from: 'courses',          // تأكد من أن هذا الاسم يتطابق مع اسم المجموعة (collection) في MongoDB
+                        startWith: '$_id',
+                        connectFromField: '_id',
+                        connectToField: 'parent',
+                        as: 'children'
+                    }
+                }
+            ]).exec();
+            return tree;
         } catch (error) {
-          throw new BadRequestException("Error retrieving course tree");
+            throw new BadRequestException("Error retrieving course tree");
         }
-      }
-      
+    }
+
+
+    async openCourseOfYear(year: YearEnum) {
+        return await this.courseModel.updateMany({ year }, {
+            isOpen: true
+        }).exec();
+    }
 }

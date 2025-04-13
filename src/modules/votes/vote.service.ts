@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { console } from "inspector/promises";
 import { Model, Types } from "mongoose";
@@ -17,12 +17,20 @@ export class VoteService {
 
     async createVote(createDto: CreatVoteDto, studentId: string) {
         try {
-            console.log({ ...createDto, studentId: studentId });
-
             const objectId = new Types.ObjectId(createDto.courseId);
-            const course = await this.courseModel.findById(objectId);
+            const course = await this.courseModel.find({
+                _id: objectId,
+                isOpen: true
+            });
             if (!course) {
-                throw new BadRequestException("Course with ID not found")
+                throw new BadRequestException("Course with ID not found or not opened")
+            }
+            const existVote=await this.voteModel.find({
+                studentId:studentId,
+                courseId:createDto.courseId
+            });
+            if(existVote){
+                throw new ConflictException("This Student is already vote")
             }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
             return await vote.save();
@@ -39,6 +47,17 @@ export class VoteService {
         } catch (error) {
             throw new BadRequestException("No Vote found ");
         }
+    }
+
+
+    async getAllVotedCourse(courseId:string){
+        return await this.voteModel.find({
+            courseId,
+            createdAt:{
+                $lte:new Date(),  //! THIS DATE SHOULD BE END DATE 
+                $gte:new Date() //! THIS DATE SHOULD BE START DATE 
+            }
+        }).exec();
     }
 
     async getMyVotedCourse(studentId: string) {
@@ -85,7 +104,7 @@ export class VoteService {
             throw new BadRequestException("Error in starting voting");
         }
     }
-    
+
     async stopVoting() {
         try {
             await this.voteModel.updateMany({}, { isVotingOpen: false });
@@ -94,5 +113,5 @@ export class VoteService {
             throw new BadRequestException("Error in stopping voting");
         }
     }
-    
+
 }

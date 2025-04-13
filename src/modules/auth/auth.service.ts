@@ -67,7 +67,8 @@ export class AuthService {
         if (!emp) {
             throw new UnauthorizedException('email or password wrong');
         }
-        const isCorrect = await bcrypt.compare(loginEmpDto.password, emp.password)
+        const isCorrect = await bcrypt.compare(loginEmpDto.password, emp.password);
+        
         if (isCorrect) {
             return {
                 message: "Login Successfully",

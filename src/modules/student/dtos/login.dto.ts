@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class LoginStudentDto {
-    @IsNumber()
+    @IsString()
     universityId: number;
     
     @IsString()
