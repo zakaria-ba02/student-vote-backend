@@ -14,6 +14,19 @@ export const GetStudentId = createParamDecorator(
 );
 
 
+export const GetStudentYear = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const student = request.user;
+    
+    if (!student || !student._id) {
+      return null;
+    }
+    
+    return student.year;
+  },
+);
+
 export const GetStudentMajor = createParamDecorator(
     (data: unknown, ctx: ExecutionContext) => {
       const request = ctx.switchToHttp().getRequest();

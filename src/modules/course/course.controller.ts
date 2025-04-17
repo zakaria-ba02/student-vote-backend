@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { GetStudentId, GetStudentYear } from "src/common/decoraters";
 import { YearEnum } from "src/common/enums/year.enum";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { CourseService } from "./course.service";
@@ -28,7 +29,7 @@ export class CourseCountroller {
 
 
     @Get('open-course/:year')
-    async getAllOpenCourse(@Param("year") year:YearEnum) {
+    async getAllOpenCourse(@Param("year") year: YearEnum) {
         return await this.courseService.getAllOpenCourse(year);
     }
 
@@ -50,5 +51,10 @@ export class CourseCountroller {
     @Post("open-course-year")
     async openCourseOfYear(@Body("year") year: YearEnum) {
         return this.courseService.openCourseOfYear(year);
+    }
+
+    @Get("avaible-course")
+    async avaibleCourse( @GetStudentYear() year: YearEnum) {
+        return await this.courseService.getAvaiableOpenCourseForStudent( year);
     }
 }

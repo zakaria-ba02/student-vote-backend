@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { Marke, MarkeSchema } from "../mark/schema/mark.schema";
 import { CourseCountroller } from "./course.controller";
 import { CourseService } from "./course.service";
 import { Course, CourseSchema } from "./schema/course.schema";
@@ -10,7 +11,11 @@ import { Course, CourseSchema } from "./schema/course.schema";
             {
                 name: Course.name,
                 schema: CourseSchema
-            }
+            },
+            {
+                name: Marke.name,
+                schema: MarkeSchema
+            },
         ])
     ],
     controllers: [CourseCountroller],

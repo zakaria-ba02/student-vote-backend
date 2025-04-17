@@ -2,13 +2,16 @@ import { BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
+import { Marke } from "../mark/schema/mark.schema";
+import { Student } from "../student/schema/student.schema";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
 
 export class CourseService {
     constructor(
-        @InjectModel(Course.name) private readonly courseModel: Model<Course>
+        @InjectModel(Course.name) private readonly courseModel: Model<Course>,
+        @InjectModel(Marke.name) private readonly markModel: Model<Marke>,
     ) { }
 
 
@@ -34,8 +37,8 @@ export class CourseService {
     }
 
     //! WE SHOULD MAKE CONTROLLER FOR THESE METHODS
-    async getAllOpenCourse(year:YearEnum) {
-        const courses = await this.courseModel.find({ isOpen: true,year }).exec();
+    async getAllOpenCourse(year: YearEnum) {
+        const courses = await this.courseModel.find({ isOpen: true, year }).exec();
         return courses;
     }
     async openCourse(id: string, isOpen: boolean) {
@@ -99,5 +102,30 @@ export class CourseService {
         return await this.courseModel.updateMany({ year }, {
             isOpen: true
         }).exec();
+    }
+
+
+    async getAvaiableOpenCourseForStudent(year: YearEnum) {
+        const courses = await this.courseModel.find({
+            year: { $lte: year },
+            isOpen: true
+        }).exec();
+        const courseIds = courses.map(c => c._id);
+
+        const marks = await this.markModel.find({
+            courseId: { $in: courseIds },
+        }).exec()
+
+        const failedOrEmptyCourseIds = courseIds.filter((c) => {
+            const mark = marks.find((m) => m.mark < 50 && m.courseId == c.toString());
+            if (mark) {
+                return true;
+            }
+            return !marks.find(m => m.courseId == c);
+        });
+        const avaibleCourses = await this.courseModel.find({
+            _id: { $in: failedOrEmptyCourseIds }
+        }).exec();
+        return avaibleCourses;
     }
 }
