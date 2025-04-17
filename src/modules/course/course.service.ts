@@ -36,7 +36,6 @@ export class CourseService {
         }
     }
 
-    //! WE SHOULD MAKE CONTROLLER FOR THESE METHODS
     async getAllOpenCourse(year: YearEnum) {
         const courses = await this.courseModel.find({ isOpen: true, year }).exec();
         return courses;
@@ -97,14 +96,14 @@ export class CourseService {
         }
     }
 
-
+    //فتح المادة حسب السنة
     async openCourseOfYear(year: YearEnum) {
         return await this.courseModel.updateMany({ year }, {
             isOpen: true
         }).exec();
     }
 
-
+    // إرجاع قائمة المواد الدراسية المتاحة للطالب بناءً على السنة 
     async getAvaiableOpenCourseForStudent(year: YearEnum) {
         const courses = await this.courseModel.find({
             year: { $lte: year },
@@ -115,7 +114,7 @@ export class CourseService {
         const marks = await this.markModel.find({
             courseId: { $in: courseIds },
         }).exec()
-
+        //جلب المواد الراسبة او التي لم يجتازها
         const failedOrEmptyCourseIds = courseIds.filter((c) => {
             const mark = marks.find((m) => m.mark < 50 && m.courseId == c.toString());
             if (mark) {

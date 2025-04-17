@@ -14,11 +14,23 @@ export class Course extends Document {
     @Prop({ enum: YearEnum, required: true })
     year: number;
     @Prop({ required: true })
-    chapter: string
+    semester: string
     @Prop({ required: true })
     courseCode: string;
     @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
     parent: Course;
+    @Prop({ default: false })
+    isVotingOpen: boolean;
+
+    @Prop()
+    votingStart?: Date;
+
+    @Prop()
+    votingEnd?: Date;
+    static isVotingOpen: any;
+    static votingStart: any;
+    static votingEnd: any;
+
 
 
 }

@@ -10,7 +10,6 @@ export class Vote extends Document {
     courseId: string;
     @Prop({ required: true })
     vote: string;
-
     @Prop()
     createdAt: Date;
 }
