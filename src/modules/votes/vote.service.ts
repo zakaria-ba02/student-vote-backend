@@ -37,24 +37,24 @@ export class VoteService {
                 throw new ConflictException("This Student is already vote")
             }
             // تحقق من فتح التصويت من قبل رئيس القسم
-        if (!Course.isVotingOpen || !Course.votingStart || !Course.votingEnd) {
-            throw new BadRequestException("Voting not available for this course yet");
-        }
+            if (!Course.isVotingOpen || !Course.votingStart || !Course.votingEnd) {
+                throw new BadRequestException("Voting not available for this course yet");
+            }
 
-        const now = new Date();
-        if (now < course.votingStart || now > course.votingEnd) {
-            throw new BadRequestException("Voting is currently closed");
-        }
+            const now = new Date();
+            if (now < course.votingStart || now > course.votingEnd) {
+                throw new BadRequestException("Voting is currently closed");
+            }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
             return await vote.save();
 
-            
+
 
         } catch (error) {
             throw error
         }
 
-        
+
 
     }
 
@@ -120,7 +120,7 @@ export class VoteService {
     async openVoting(courseId: string, startDate: Date, endDate: Date) {
         const course = await this.courseModel.findById(courseId);
         if (!course) throw new BadRequestException("Course not found");
-    
+
         course.isVotingOpen = true;
         course.votingStart = startDate;
         course.votingEnd = endDate;
@@ -130,11 +130,11 @@ export class VoteService {
     async closeVoting(courseId: string) {
         const course = await this.courseModel.findById(courseId);
         if (!course) throw new BadRequestException("Course not found");
-    
+
         course.isVotingOpen = false;
         return await course.save();
     }
-    
+
 
 
 
