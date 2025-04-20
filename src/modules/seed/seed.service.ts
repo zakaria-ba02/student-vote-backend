@@ -45,7 +45,7 @@ export class SeedService implements OnModuleInit {
         if (!existCourse) {
             const courses = [
                 {
-                    name: "مهارات حاسوب",
+                    name: " لغة ",
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
