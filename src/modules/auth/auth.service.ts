@@ -34,7 +34,6 @@ export class AuthService {
     async registerStudent(student: CreateStudentDto) {
         try {
             return await this.empModel.create(student);
-
         } catch (error) {
             throw new BadRequestException('Invalid input');
         }

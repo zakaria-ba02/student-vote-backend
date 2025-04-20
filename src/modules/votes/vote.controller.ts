@@ -58,7 +58,7 @@ export class VoteController {
 
 
     @Patch("open-voting/:id")
-    @Roles(Role.EMP) // رئيس القسم فقط
+    @Roles(Role.ADMIN) 
     async openVoting(
         @Param("id") courseId: string,
         @Query("startDate") startDate: string,

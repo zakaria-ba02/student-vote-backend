@@ -37,7 +37,8 @@ export class JwtStrategy extends PassportStrategy(Strategy as any) {
                 year: payload.year,
             };
         }
-
+        console.log(payload);
+        
         throw new UnauthorizedException('Invalid role');
     }
 

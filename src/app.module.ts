@@ -9,6 +9,7 @@ import { EmpModule } from "./modules/emp/emp.module";
 import { MarkModule } from "./modules/mark/marke.module";
 import { PrerModule } from "./modules/prerequisite/prerequisite.module";
 import { PrerService } from "./modules/prerequisite/prerequisite.service";
+import { SeedModule } from "./modules/seed/seed.module";
 import { StudentModule } from "./modules/student/student.module";
 import { VoteModule } from "./modules/votes/vote.module";
 
@@ -27,14 +28,15 @@ import { VoteModule } from "./modules/votes/vote.module";
         CourseModule,
         PrerModule,
         MarkModule,
-        AuthModule
+        AuthModule,
+        SeedModule
 
     ],
-    providers: [
-        {
-          provide: APP_GUARD,
-          useClass: RolesGuard,
-        },
-      ],
+    // providers: [
+    //     {
+    //       provide: APP_GUARD,
+    //       useClass: RolesGuard,
+    //     },
+    //   ],
 })
 export class AppModule { }
