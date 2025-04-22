@@ -54,4 +54,11 @@ export class PrerService {
         }
         return { message: "Prer deleted successfully" }
     }
+
+
+    async checkCourseIsAvaibale(courseId:string,studentId:string){
+        //! WE SHOULD COMPARE WITH THIS COURSE AND WITH PREREQUESTIES COURSES  
+
+        return true // or false;
+    }
 }
