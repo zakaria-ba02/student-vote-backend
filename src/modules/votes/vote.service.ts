@@ -16,9 +16,9 @@ export class VoteService {
     // إنشاء تصويت جديد للطالب على مادة دراسية معينة  
     async createVote(createDto: CreatVoteDto, studentId: string) {
         try {
-            console.log("HJ");
-            console.log(createDto, studentId);
-
+            console.log({ ...createDto, studentId: studentId });
+            console.log("Hello Besher");
+            
             const objectId = new Types.ObjectId(createDto.courseId);
             const course = await this.courseModel.findOne({
                 _id: objectId,
@@ -37,7 +37,7 @@ export class VoteService {
                 throw new ConflictException("This Student is already vote")
             }
             // تحقق من فتح التصويت من قبل رئيس القسم
-            if (!Course.isVotingOpen || !Course.votingStart || !Course.votingEnd) {
+            if (!course.isVotingOpen || !course.votingStart || !course.votingEnd) {
                 throw new BadRequestException("Voting not available for this course yet");
             }
 
