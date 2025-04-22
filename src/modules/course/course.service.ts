@@ -103,15 +103,15 @@ export class CourseService {
     }
 
     // إرجاع قائمة المواد الدراسية المتاحة للطالب بناءً على السنة 
-    async getAvaiableOpenCourseForStudent(year: YearEnum) {
+    async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
         const courses = await this.courseModel.find({
             year: { $lte: year },
             isOpen: true
         }).exec();
         const courseIds = courses.map(c => c._id);
-
         const marks = await this.markModel.find({
             courseId: { $in: courseIds },
+            studentId
         }).exec()
         //جلب المواد الراسبة او التي لم يجتازها
         const failedOrEmptyCourseIds = courseIds.filter((c) => {
@@ -121,6 +121,7 @@ export class CourseService {
             }
             return !marks.find(m => m.courseId == c);
         });
+        
         const avaibleCourses = await this.courseModel.find({
             _id: { $in: failedOrEmptyCourseIds }
         }).exec();
