@@ -15,33 +15,28 @@ import { VoteService } from "./vote.service";
 export class VoteController {
     constructor(private readonly voteService: VoteService) { }
 
-    @Post()
+    @Roles(Role.STUDENT)
+    @Post("create-vote")
     async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
         return await this.voteService.createVote(createVoteDto, studentId);
     }
 
+    
     @Get("find-my-voted")
     async getMyVotedCourse(@GetStudentId() studentId: string) {
         return await this.voteService.getMyVotedCourse(studentId);
     }
+
     @Get("find-all")
     async getAllVotes() {
         return this.voteService.getAllVote();
     }
+
     @Get("find-by-id/:id")
     async getVoteById(@Param("id") id: string) {
         const vote = await this.voteService.getVoteById(id);
         return vote;
     }
-    @Patch(":id")
-    async updateVote(@Body() updateVoteDto: UpdateVoteDto, @Param("id") id: string) {
-        return await this.voteService.updateVote(id, updateVoteDto);
-    }
-    @Delete(":id")
-    async deleteStudent(@Param("id") id: string) {
-        return await this.voteService.deleteVote(id);
-    }
-
 
     @Get('course-votes')
     async getAllVotedCourse(
@@ -57,6 +52,12 @@ export class VoteController {
     }
 
 
+    @Roles(Role.STUDENT)
+    @Patch("update/:id")
+    async updateVote(@Body() updateVoteDto: UpdateVoteDto, @Param("id") id: string) {
+        return await this.voteService.updateVote(id, updateVoteDto);
+    }
+
     @Patch("open-voting/:id")
     @Roles(Role.ADMIN) 
     async openVoting(
@@ -69,11 +70,26 @@ export class VoteController {
         return this.voteService.openVoting(courseId, start, end);
     }
 
+
     @Patch("close-voting/:id")
     @Roles(Role.ADMIN)
     async closeVoting(@Param("id") courseId: string) {
         return this.voteService.closeVoting(courseId);
     }
+    
+
+    @Roles(Role.STUDENT)
+    @Delete("delete/:id")
+    async deleteVote(@Param("id") id: string) {
+        return await this.voteService.deleteVote(id);
+    }
+
+
+    
+
+    
+
+    
 
 
 }

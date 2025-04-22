@@ -8,36 +8,39 @@ import { CreateMarkeDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
 import { MarkService } from "./marke.service";
 
+
 @Controller("mark")
-@UseGuards(JwtAuthGuard,RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MarkController {
     constructor(
         private readonly markService: MarkService
     ) { }
 
-    @Post()
+    @Post("create-marks")
     @Roles(Role.EMP)
-    async createMark(@Body() createDto: CreateMarkeDto,@GetStudentId() studentId: string) {
-        return await this.markService.createMarke(createDto,studentId);
+    async createMark(@Body() createDto: CreateMarkeDto, @GetStudentId() studentId: string) {
+        return await this.markService.createMarke(createDto, studentId);
     }
 
-
-
+    @Roles(Role.EMP,Role.STUDENT)
     @Get("get-my-marks")
     async getMyMarks(@GetStudentId() studentId: string) {
         return await this.markService.getMarkByStudentId(studentId);
     }
-    @Get()
+
+    @Roles(Role.EMP,Role.STUDENT)
+    @Get("get-all-marks")
     async getAllMark() {
         return await this.markService.getAllMark();
     }
 
+    @Roles(Role.EMP,Role.STUDENT)
     @Get('find-by-id/:id')
     async getMarkById(@Param('id') id: string) {
         return await this.markService.getMarkById(id);
     }
 
-    @Patch(':id')
+    @Patch('update/:id')
     @Roles(Role.EMP)
     async updateMark(@Body() body: {
         id: number,
@@ -47,7 +50,8 @@ export class MarkController {
         return await this.markService.updateMark(body.id, body.updateDto);
     }
 
-    @Delete(':id')
+    @Roles(Role.EMP)
+    @Delete('delete/:id')
     async deleteMark(@Param('id') id: string) {
         return await this.markService.deleteMark(id);
     }

@@ -5,14 +5,13 @@ import { Role } from "../enums/role.enum";
 @Schema({ timestamps: true })
 export class Emp extends Document {
 
-
     @Prop({ required: true })
     name: string;
 
     @Prop({ required: true })
     dob: string;
 
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true})
     email: string;
 
     @Prop({ required: true })

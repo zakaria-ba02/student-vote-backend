@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
 import { Marke } from "../mark/schema/mark.schema";
-import { Student } from "../student/schema/student.schema";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";

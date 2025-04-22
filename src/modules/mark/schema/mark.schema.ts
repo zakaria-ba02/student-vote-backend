@@ -16,8 +16,10 @@ export class Marke extends Document {
 
     @Prop({ required: true })
     type: string;
+
     @Prop()
     createdAt: string
+    
     @Prop()
     UpdateAt: string
 }

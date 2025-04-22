@@ -1,4 +1,4 @@
-import { IsInt, IsString, isString } from "class-validator";
+import { IsString} from "class-validator";
 
 export class CreatVoteDto {
     @IsString()

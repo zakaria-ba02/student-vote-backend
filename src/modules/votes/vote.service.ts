@@ -2,7 +2,6 @@ import { BadRequestException, ConflictException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Course } from "../course/schema/course.schema";
-import { Student } from "../student/schema/student.schema";
 import { CreatVoteDto } from "./dto/creat.dto";
 import { UpdateVoteDto } from "./dto/update.dto";
 import { Vote } from "./schema/vote.schema";
@@ -47,17 +46,10 @@ export class VoteService {
             }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
             return await vote.save();
-
-
-
         } catch (error) {
             throw error
         }
-
-
-
     }
-
 
     async getAllVote() {
         try {
@@ -134,8 +126,4 @@ export class VoteService {
         course.isVotingOpen = false;
         return await course.save();
     }
-
-
-
-
 }

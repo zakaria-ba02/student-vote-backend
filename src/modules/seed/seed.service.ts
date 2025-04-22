@@ -4,7 +4,6 @@ import * as  bcrypt from "bcryptjs";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
 import { Course } from "../course/schema/course.schema";
-import { CreateEmpDto } from "../emp/dtos/create.dto";
 import { Emp } from "../emp/schema/emp.schema";
 
 export class SeedService implements OnModuleInit {
@@ -17,6 +16,7 @@ export class SeedService implements OnModuleInit {
     onModuleInit() {
         this.seedingAdmin()
         this.seedingCourse();
+        this.seedingEmp()
     }
 
     async seedingAdmin() {
@@ -82,6 +82,27 @@ export class SeedService implements OnModuleInit {
             console.log("Seeded Courses Success");
         }else{
             console.log("Courses Already exist");
+
+        }
+    }
+
+
+
+    async seedingEmp() {
+        console.log("Seeding Emp .....");
+        const existEmp = await this.empModel.findOne({ role: "Emp" });
+        if (!existEmp) {
+            const Emp = {
+                name: "Emp",
+                role: "emp",
+                email: "emp@info.com",
+                password: await bcrypt.hash("emp@123", 10),
+                dob: new Date().toDateString(),
+            }
+            await this.empModel.create(Emp);
+            console.log("Seeded Successfully");
+        } else {
+            console.log("Therer are already emp");
 
         }
     }

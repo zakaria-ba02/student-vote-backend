@@ -1,10 +1,8 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CreateEmpDto } from "../emp/dtos/create.dto";
-import { EmpService } from "../emp/emp.service";
 import { CreateStudentDto } from "../student/dtos/create.dto";
 import { LoginStudentDto } from "../student/dtos/login.dto";
-import { StudentService } from "../student/student.service";
 import * as bcrypt from 'bcryptjs';
 import { LoginEmpDto } from "../emp/dtos/login.dto";
 import { InjectModel } from "@nestjs/mongoose";
@@ -23,6 +21,10 @@ export class AuthService {
 
     async registerEmp(emp: CreateEmpDto) {
         try {
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(emp.password, salt);
+            emp.password = hashPassword;
+
             const newEmp = await this.empModel.create(emp);
             return await newEmp.save();
         } catch (error) {
@@ -33,8 +35,14 @@ export class AuthService {
 
     async registerStudent(student: CreateStudentDto) {
         try {
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(student.password, salt);
+            student.password = hashPassword;
+
             return await this.empModel.create(student);
         } catch (error) {
+            console.log(error);
+            
             throw new BadRequestException('Invalid input');
         }
     }

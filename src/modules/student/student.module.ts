@@ -1,4 +1,4 @@
-import { Controller, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Student, StudentSchema } from "./schema/student.schema";
 import { StudentController } from "./student.controller";

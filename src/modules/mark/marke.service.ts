@@ -1,6 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model } from "mongoose";
 import { Student } from "../student/schema/student.schema";
 import { CreateMarkeDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
@@ -11,21 +11,21 @@ export class MarkService {
         @InjectModel(Marke.name) private readonly markModel: Model<Marke>,
         @InjectModel(Student.name) private readonly studentModel: Model<Student>
     ) { }
-    async createMarke(createDto: CreateMarkeDto,studentId: string) {
+    async createMarke(createDto: CreateMarkeDto, studentId: string) {
         try {
-          
+
             const mark = await this.markModel.create({ ...createDto, studentId: studentId })
             return await mark.save();
         } catch (error) {
             console.log(error);
-            
+
             throw new BadRequestException("Error in Creating Mark");
         }
     }
 
     async getAllMark() {
         try {
-            const mark = await this.markModel.find({}).populate("studentId","name").populate("courseId").exec();
+            const mark = await this.markModel.find({}).populate("studentId", "name").populate("courseId").exec();
             return mark;
         } catch (error) {
             throw new BadRequestException("No Mark found ");
