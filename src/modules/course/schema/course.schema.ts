@@ -13,8 +13,8 @@ export class Course extends Document {
     isOpen: boolean;
     @Prop({ enum: YearEnum, required: true })
     year: number;
-    @Prop({ })
-    semester: string
+    @Prop({required:true})
+    semester: number
     @Prop({ required: true })
     courseCode: string;
     @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
