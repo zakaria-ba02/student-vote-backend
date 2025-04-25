@@ -4,7 +4,7 @@ import { Roles } from "src/common/decoraters/roles";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
 import { Role } from "../emp/enums/role.enum";
-import { CreateMarkeDto } from "./dto/create.dto";
+import { CreateMarkDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
 import { MarkService } from "./marke.service";
 
@@ -18,8 +18,8 @@ export class MarkController {
 
     @Post("create-marks")
     @Roles(Role.EMP)
-    async createMark(@Body() createDto: CreateMarkeDto, @GetStudentId() studentId: string) {
-        return await this.markService.createMarke(createDto, studentId);
+    async createMark(@Body() createDto: CreateMarkDto, @GetStudentId() studentId: string) {
+        return await this.markService.createMark(createDto, studentId);
     }
 
     @Roles(Role.EMP,Role.STUDENT)
@@ -43,7 +43,7 @@ export class MarkController {
     @Patch('update/:id')
     @Roles(Role.EMP)
     async updateMark(@Body() body: {
-        id: number,
+        id: string,
         updateDto: UpdateMarkDto
     }
     ) {

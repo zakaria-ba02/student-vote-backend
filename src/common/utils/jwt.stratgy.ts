@@ -25,16 +25,20 @@ export class JwtStrategy extends PassportStrategy(Strategy as any) {
                 name: payload.name,
                 role: payload.role,
                 email: payload.email,
+                dob: payload.dob
             };
         }
+
 
         if (payload.role === Role.STUDENT) {
             return {
                 _id:payload._id,
                 name: payload.name,
                 major: payload.major,
-                uniNumber: payload.uniNumber,
+                universityId: payload.universityId,
                 year: payload.year,
+                role: payload.role,
+
             };
         }
         console.log(payload);

@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Marke, MarkeSchema } from "../mark/schema/mark.schema";
+import { Mark, MarkSchema } from "../mark/schema/mark.schema";
 import { CourseCountroller } from "./course.controller";
 import { CourseService } from "./course.service";
 import { Course, CourseSchema } from "./schema/course.schema";
+import { Student, StudentSchema } from "../student/schema/student.schema";
 
 @Module({
     imports: [
@@ -13,8 +14,12 @@ import { Course, CourseSchema } from "./schema/course.schema";
                 schema: CourseSchema
             },
             {
-                name: Marke.name,
-                schema: MarkeSchema
+                name: Mark.name,
+                schema: MarkSchema
+            },
+            {
+                name: Student.name,
+                schema: StudentSchema
             },
         ])
     ],
