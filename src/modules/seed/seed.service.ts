@@ -689,7 +689,7 @@ export class SeedService implements OnModuleInit {
 
     async seedingEmp() {
         console.log("Seeding Emp .....");
-        const existEmp = await this.empModel.findOne({ role: "Emp" });
+        const existEmp = await this.empModel.findOne({ role: "emp" });
         if (!existEmp) {
             const Emp = {
                 name: "Emp",

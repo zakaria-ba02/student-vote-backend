@@ -22,6 +22,9 @@ export class Course extends Document {
     @Prop({ default: false })
     isVotingOpen: boolean;
 
+    @Prop({ required: true, default: 3 })
+    creditHours: number;
+
     @Prop()
     votingStart?: Date;
 

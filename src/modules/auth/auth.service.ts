@@ -41,7 +41,7 @@ export class AuthService {
 
             return await this.empModel.create(student);
         } catch (error) {
-            console.log(error);
+            
             
             throw new BadRequestException('Invalid input');
         }

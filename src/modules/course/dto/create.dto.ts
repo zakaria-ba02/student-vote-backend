@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from "class-validator";
+import { IsEnum, IsInt, IsString } from "class-validator";
 import { YearEnum } from "src/common/enums/year.enum";
 
 export class CreateCourseDto {
@@ -10,8 +10,8 @@ export class CreateCourseDto {
     type: string;
     @IsEnum(YearEnum)
     year: number;
-    @IsString()
-    semester: string;
+    @IsInt()
+    semester: number;
     @IsString()
     courseCode: string
 }

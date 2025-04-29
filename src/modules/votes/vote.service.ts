@@ -16,9 +16,7 @@ export class VoteService {
     // إنشاء تصويت جديد للطالب على مادة دراسية معينة  
     async createVote(createDto: CreatVoteDto, studentId: string) {
         try {
-            console.log({ ...createDto, studentId: studentId });
-            console.log("Hello Besher");
-
+            
             const objectId = new Types.ObjectId(createDto.courseId);
             const course = await this.courseModel.findOne({
                 _id: objectId,

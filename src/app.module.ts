@@ -9,6 +9,7 @@ import { SeedModule } from "./modules/seed/seed.module";
 import { StudentModule } from "./modules/student/student.module";
 import { VoteModule } from "./modules/votes/vote.module";
 
+
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -24,7 +25,8 @@ import { VoteModule } from "./modules/votes/vote.module";
         CourseModule,
         MarkModule,
         AuthModule,
-        SeedModule
+        SeedModule,
+        
 
     ],
     // providers: [

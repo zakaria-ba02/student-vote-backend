@@ -2,7 +2,7 @@ import { BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
-import { Marke } from "../mark/schema/mark.schema";
+import { Mark } from "../mark/schema/mark.schema";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
@@ -10,7 +10,7 @@ import { Course } from "./schema/course.schema";
 export class CourseService {
     constructor(
         @InjectModel(Course.name) private readonly courseModel: Model<Course>,
-        @InjectModel(Marke.name) private readonly markModel: Model<Marke>,
+        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,
     ) { }
 
 
@@ -20,7 +20,6 @@ export class CourseService {
             const course = await this.courseModel.create(createDto);
             return await course.save();
         } catch (error) {
-            console.log(error);
             throw new BadRequestException("Error in Creating Course");
         }
     }
