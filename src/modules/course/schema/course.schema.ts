@@ -13,7 +13,7 @@ export class Course extends Document {
     isOpen: boolean;
     @Prop({ enum: YearEnum, required: true })
     year: number;
-    @Prop({required:true})
+    @Prop({ required: true })
     semester: number
     @Prop({ required: true })
     courseCode: string;
@@ -32,6 +32,11 @@ export class Course extends Document {
     static votingEnd: any;
 
 
+    @Prop({ required: true, default: 3 })
+    creditHours: number;
+
+    @Prop({ref:Course.name, required:false})
+    prerequest_course_id:string
 
 }
 export const CourseSchema = SchemaFactory.createForClass(Course);

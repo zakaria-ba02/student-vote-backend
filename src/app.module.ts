@@ -5,7 +5,6 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { CourseModule } from "./modules/course/course.module";
 import { EmpModule } from "./modules/emp/emp.module";
 import { MarkModule } from "./modules/mark/marke.module";
-import { PrerModule } from "./modules/prerequisite/prerequisite.module";
 import { SeedModule } from "./modules/seed/seed.module";
 import { StudentModule } from "./modules/student/student.module";
 import { VoteModule } from "./modules/votes/vote.module";
@@ -23,7 +22,6 @@ import { VoteModule } from "./modules/votes/vote.module";
         StudentModule,
         VoteModule,
         CourseModule,
-        PrerModule,
         MarkModule,
         AuthModule,
         SeedModule

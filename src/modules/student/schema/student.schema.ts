@@ -15,9 +15,25 @@ export class Student extends Document {
     password: string;
 
     @Prop({
-            enum: Role,
-            default: Role.STUDENT
-        })
-        role: string;
+        enum: Role,
+        default: Role.STUDENT
+    })
+    role: string;
+
+
+    @Prop({
+        type: [{
+            courseCode: String,
+            grade: Number,
+            date: Date
+        }],
+        default: []
+    })
+    completedCourses: {
+        courseCode: string;
+        grade: number;
+        date: Date;
+    }[];
+
 }
 export const StudentSchema = SchemaFactory.createForClass(Student);

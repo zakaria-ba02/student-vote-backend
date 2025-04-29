@@ -22,8 +22,6 @@ export class CourseService {
         } catch (error) {
             console.log(error);
             throw new BadRequestException("Error in Creating Course");
-
-
         }
     }
     async getAllCourse() {
@@ -73,27 +71,7 @@ export class CourseService {
         return { message: "Course deleted successfully" }
     }
 
-    async getCourseTree(): Promise<any[]> {
-        try {
-            const tree = await this.courseModel.aggregate([
-                {
-                    $match: { parent: null } // اختيار المواد الجذرية
-                },
-                {
-                    $graphLookup: {
-                        from: 'courses',          // تأكد من أن هذا الاسم يتطابق مع اسم المجموعة (collection) في MongoDB
-                        startWith: '$_id',
-                        connectFromField: '_id',
-                        connectToField: 'parent',
-                        as: 'children'
-                    }
-                }
-            ]).exec();
-            return tree;
-        } catch (error) {
-            throw new BadRequestException("Error retrieving course tree");
-        }
-    }
+
 
     //فتح المادة حسب السنة
     async openCourseOfYear(year: YearEnum) {
@@ -103,28 +81,19 @@ export class CourseService {
     }
 
     // إرجاع قائمة المواد الدراسية المتاحة للطالب بناءً على السنة 
-    async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
-        const courses = await this.courseModel.find({
-            year: { $lte: year },
-            isOpen: true
-        }).exec();
-        const courseIds = courses.map(c => c._id);
-        const marks = await this.markModel.find({
-            courseId: { $in: courseIds },
-            studentId
-        }).exec()
-        //جلب المواد الراسبة او التي لم يجتازها
-        const failedOrEmptyCourseIds = courseIds.filter((c) => {
-            const mark = marks.find((m) => m.mark < 50 && m.courseId == c.toString());
-            if (mark) {
-                return true;
-            }
-            return !marks.find(m => m.courseId == c);
-        });
-        
-        const avaibleCourses = await this.courseModel.find({
-            _id: { $in: failedOrEmptyCourseIds }
-        }).exec();
-        return avaibleCourses;
-    }
+    // async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
+    //     const courses = await this.courseModel.find({
+    //         year: { $lte: year },
+    //         isOpen: true
+    //     }).exec();
+    //     let courseIds = courses.map(c => c._id);
+    //     //جلب المواد الراسبة او التي لم يجتازها
+    //     courseIds=courseIds.filter(async (c:string)=>{
+    //       return await  this.prerequestiesService.checkCourseIsAvaibale(c,studentId);
+    //     })
+    //     const avaibleCourses = await this.courseModel.find({
+    //         _id: { $in: courseIds }
+    //     }).exec();
+    //     return avaibleCourses;
+    // }
 }

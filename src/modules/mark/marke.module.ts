@@ -3,6 +3,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Student, StudentSchema } from "../student/schema/student.schema";
 import { MarkController } from "./marke.controller";
 import { MarkService } from "./marke.service";
+import { CourseModule } from "../course/course.module";
+import { Course, CourseSchema } from "../course/schema/course.schema";
 import { Marke, MarkeSchema } from "./schema/mark.schema";
 
 @Module({
@@ -15,8 +17,13 @@ import { Marke, MarkeSchema } from "./schema/mark.schema";
             {
                 name:Student.name,
                 schema:StudentSchema
-            }
-        ])
+            },
+            {
+                name:Course.name,
+                schema:CourseSchema
+            },
+        ]),
+        CourseModule
     ],
     controllers: [MarkController],
     providers: [MarkService],

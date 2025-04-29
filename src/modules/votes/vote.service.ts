@@ -10,6 +10,7 @@ export class VoteService {
     constructor(
         @InjectModel(Vote.name) private readonly voteModel: Model<Vote>,
         @InjectModel(Course.name) private readonly courseModel: Model<Course>,
+        
     ) { }
 
     // إنشاء تصويت جديد للطالب على مادة دراسية معينة  
@@ -17,7 +18,7 @@ export class VoteService {
         try {
             console.log({ ...createDto, studentId: studentId });
             console.log("Hello Besher");
-            
+
             const objectId = new Types.ObjectId(createDto.courseId);
             const course = await this.courseModel.findOne({
                 _id: objectId,
@@ -44,8 +45,16 @@ export class VoteService {
             if (now < course.votingStart || now > course.votingEnd) {
                 throw new BadRequestException("Voting is currently closed");
             }
+
+            // const isAllowed = await this.prerequisitesService.checkCourseIsAvailable(createDto.courseId, studentId);
+            // if (!isAllowed) {
+            //     throw new BadRequestException("You must complete prerequisite courses before voting for this course.");
+            // }
             const vote = await this.voteModel.create({ ...createDto, studentId: studentId });
             return await vote.save();
+
+           
+
         } catch (error) {
             throw error
         }
