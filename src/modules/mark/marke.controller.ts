@@ -17,7 +17,7 @@ export class MarkController {
     ) { }
 
     @Post("create-marks")
-    @Roles(Role.EMP)
+    // @Roles(Role.EMP)
     async createMark(@Body() createDto: CreateMarkDto, @GetStudentId() studentId: string) {
         return await this.markService.createMark(createDto, studentId);
     }

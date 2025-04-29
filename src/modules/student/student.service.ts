@@ -52,6 +52,16 @@ export class StudentService {
         }
 
     }
+    async findStudentByName(name: string) {
+        try {
+            const student = await this.studentModel.find({ name: { $regex: name, $options: 'i' } }).exec();
+            return student;
+        } catch (error) {
+
+            throw new BadRequestException("No student found with ID: ${name}");
+        }
+
+    }
 
     async findByUniversityId(universityId: number): Promise<Student | null> {
         try {
@@ -60,6 +70,7 @@ export class StudentService {
             throw new BadRequestException("No student found with UniversityId: ${id}");
         }
     }
+    
 
     async updateStudent(id: string, student: UpdateStudentDto) {
         try {
@@ -88,7 +99,7 @@ export class StudentService {
 
         // استرجاع الساعات المعتمدة الخاصة بكل مادة
         const courseIds = passedMarks.map(mark => mark.courseId);
-        const courses = await this.courseModel.find({ _id: { $in: courseIds }, year, semester: semester }).exec();
+        const courses = await this.courseModel.find({ _id: { $in: courseIds }, year, semester:semester }).exec();
 
         // حساب المعدل الفصلي
         let totalCredits = 0;
