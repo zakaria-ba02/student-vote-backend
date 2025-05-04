@@ -80,19 +80,7 @@ export class CourseService {
     }
 
     // إرجاع قائمة المواد الدراسية المتاحة للطالب بناءً على السنة 
-    // async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
-    //     const courses = await this.courseModel.find({
-    //         year: { $lte: year },
-    //         isOpen: true
-    //     }).exec();
-    //     let courseIds = courses.map(c => c._id);
-    //     //جلب المواد الراسبة او التي لم يجتازها
-    //     courseIds=courseIds.filter(async (c:string)=>{
-    //       return await  this.prerequestiesService.checkCourseIsAvaibale(c,studentId);
-    //     })
-    //     const avaibleCourses = await this.courseModel.find({
-    //         _id: { $in: courseIds }
-    //     }).exec();
-    //     return avaibleCourses;
-    // }
+    async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string,) {
+        const course=this.courseModel.find()
+    }
 }
