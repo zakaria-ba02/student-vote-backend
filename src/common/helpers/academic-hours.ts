@@ -5,7 +5,7 @@ export function academicHours(completedHours: number): YearEnum {
         return YearEnum.GRADUATED;
     } else if (completedHours >= 151) {
         return YearEnum.ofGraduates;
-    } else if (completedHours >= 122) {
+    } else if (completedHours >= 120) {
         return YearEnum.FIFTH;
     } else if (completedHours >= 88) {
         return YearEnum.FOURTH;
