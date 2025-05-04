@@ -1,17 +1,28 @@
-import { IsEnum, IsInt, IsString } from "class-validator";
-import { YearEnum } from "src/common/enums/year.enum";
+import { IsArray, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
+import { YearEnum } from "src/common/enums/year.enum"
+
 
 export class CreateCourseDto {
     @IsString()
-    name: string;
+    name: string
+
     @IsString()
-    teacher: string;
+    teacher: string
+
     @IsString()
-    type: string;
+    type: string
+
     @IsEnum(YearEnum)
-    year: number;
-    @IsInt()
-    semester: number;
+    year: number
+    
+    @IsString()
+    semester: string
+
     @IsString()
     courseCode: string
+
+    @IsOptional()
+    @IsArray()
+    prerequisites?: string[];
+
 }

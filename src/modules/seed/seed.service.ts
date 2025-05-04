@@ -108,7 +108,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIRST,
                     semester: 2,
                     courseCode: "ENG105",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ENG100"]
                 },
 
                 {
@@ -128,7 +129,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIRST,
                     semester: 2,
                     courseCode: "MTH100",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["MTH105"]
                 },
 
                 {
@@ -138,7 +140,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIRST,
                     semester: 2,
                     courseCode: "PHS110",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105"]
                 },
 
                 {
@@ -148,7 +151,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIRST,
                     semester: 2,
                     courseCode: "ELC120",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105"]
                 },
 
                 {
@@ -167,7 +171,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "ENG105",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ENG100"]
                 },
 
                 {
@@ -177,7 +182,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "MTH115",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["MTH105"]
                 },
 
                 {
@@ -187,7 +193,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "ELC201",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105,ELC201"]
                 },
 
                 {
@@ -197,7 +204,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "ELC207",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105"]
                 },
 
                 {
@@ -207,7 +215,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "ITC203",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105"]
                 },
 
                 {
@@ -217,7 +226,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 1,
                     courseCode: "ITC209",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC115"]
                 },
 
                 {
@@ -247,7 +257,9 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 2,
                     courseCode: "ELC222",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ELC201"]
+                    
                 },
 
                 {
@@ -257,7 +269,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 2,
                     courseCode: "ITC216",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ELC201"]
                 },
 
                 {
@@ -267,7 +280,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 2,
                     courseCode: "ITC212",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC203"]
                 },
 
                 {
@@ -277,7 +291,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.SECOUND,
                     semester: 2,
                     courseCode: "ITC218",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC209"]
                 },
                 {
                     name: "تنظيم الحاسوب ولغة التجميع",
@@ -286,7 +301,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ITC301",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC110"]
                 },
 
                 {
@@ -296,7 +312,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ELC313",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ELC222"]
                 },
 
                 {
@@ -306,7 +323,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ITC311",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["PHS105"],
                 },
                 {
                     name: " مبادئ الذكاء الصنعي ",
@@ -315,7 +333,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ITC303",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC115"]
                 },
 
                 {
@@ -325,7 +344,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ITC307",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC209"]
                 },
 
                 {
@@ -335,7 +355,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 1,
                     courseCode: "ITC309",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC209"]
                 },
 
                 {
@@ -375,7 +396,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 2,
                     courseCode: "ITC324",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ELC313"]
                 },
 
 
@@ -386,7 +408,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 2,
                     courseCode: "ITC318",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC311"]
                 },
 
                 {
@@ -396,7 +419,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.THIRD,
                     semester: 2,
                     courseCode: "ITC326",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC209"]
                 },
                 {
                     name: "نظم تشغيل",
@@ -405,7 +429,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FOURTH,
                     semester: 1,
                     courseCode: "ITC407",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC322"]
                 },
                 {
                     name: "شبكات الحاسوب 1",
@@ -441,7 +466,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FOURTH,
                     semester: 1,
                     courseCode: "ITC409",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ELC207"]
                 },
 
                 {
@@ -451,7 +477,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FOURTH,
                     semester: 1,
                     courseCode: "ITC401",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC318"]
                 },
 
                 {
@@ -461,7 +488,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FOURTH,
                     semester: 2,
                     courseCode: "ITC416",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC411"]
                 },
 
                 {
@@ -552,7 +580,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 1,
                     courseCode: "ITC515",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC401"]
                 },
 
                 {
@@ -562,7 +591,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 1,
                     courseCode: "ITC501",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC326"]
                 },
 
                 {
@@ -572,7 +602,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 1,
                     courseCode: "ITC503",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC309"]
                 },
 
                 {
@@ -582,7 +613,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 2,
                     courseCode: "ITC507",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC407"]
                 },
 
                 {
@@ -613,7 +645,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 2,
                     courseCode: "ITC516",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC501"]
                 },
 
 
@@ -624,7 +657,8 @@ export class SeedService implements OnModuleInit {
                     year: YearEnum.FIFTH,
                     semester: 2,
                     courseCode: "ITC417",
-                    creditHours:3
+                    creditHours:3,
+                    prerequisites:["ITC403"]
                 },
 
                 {

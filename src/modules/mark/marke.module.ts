@@ -5,14 +5,14 @@ import { MarkController } from "./marke.controller";
 import { MarkService } from "./marke.service";
 import { CourseModule } from "../course/course.module";
 import { Course, CourseSchema } from "../course/schema/course.schema";
-import { Marke, MarkeSchema } from "./schema/mark.schema";
+import { Mark, MarkSchema } from "./schema/mark.schema";
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             {
-                name: Marke.name,
-                schema: MarkeSchema
+                name: Mark.name,
+                schema: MarkSchema
             },
             {
                 name:Student.name,

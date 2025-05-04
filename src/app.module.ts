@@ -29,11 +29,6 @@ import { VoteModule } from "./modules/votes/vote.module";
         
 
     ],
-    // providers: [
-    //     {
-    //       provide: APP_GUARD,
-    //       useClass: RolesGuard,
-    //     },
-    //   ],
+    
 })
 export class AppModule { }

@@ -3,5 +3,7 @@ export enum YearEnum{
     SECOUND=2,
     THIRD=3,
     FOURTH=4,
-    FIFTH=5
+    FIFTH=5,
+    GRADUATED = 'Graduated',
+    ofGraduates='ofgraduates'
 }

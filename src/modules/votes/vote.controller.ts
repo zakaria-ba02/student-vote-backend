@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { GetStudentId } from "src/common/decoraters";
 import { Roles } from "src/common/decoraters/roles";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
@@ -15,10 +15,15 @@ import { VoteService } from "./vote.service";
 export class VoteController {
     constructor(private readonly voteService: VoteService) { }
 
-    @Roles(Role.STUDENT)
+    // @Roles(Role.STUDENT)
+    // @Post("create-vote")
+    // async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
+    //     return await this.voteService.createVote(createVoteDto, studentId);
+    // }
     @Post("create-vote")
-    async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
-        return await this.voteService.createVote(createVoteDto, studentId);
+    async createVote(@Body() createVoteDto: CreatVoteDto, @Req() req) {
+        const studentId = req.user.id; // تأكد أن middleware أو JWT يوفر ID الطالب
+        return this.voteService.createVote(createVoteDto, studentId);
     }
 
     

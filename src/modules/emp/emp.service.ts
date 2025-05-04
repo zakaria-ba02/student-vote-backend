@@ -1,6 +1,6 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import  * as bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import { Model } from "mongoose";
 import { CreateEmpDto } from "./dtos/create.dto";
 import { UpdateEmDto } from "./dtos/update.dto";
@@ -26,25 +26,26 @@ export class EmpService {
 
     // error handling for all things
 
-    async getAllEmp() {
+    async getAllEmp(): Promise<Emp[]> {
         try {
-            const emp = await this.empModel.find({});
-            return emp;
+            return await this.empModel.find({});
         } catch (error) {
             throw new BadRequestException("No Emp found ");
         }
     }
     async getEmpById(id: string) {
         try {
-            const emp = await this.empModel.findById(id)
+            const emp = await this.empModel.findById(id);
+            if (!emp) {
+                throw new NotFoundException(`لا يوجد موظف بالمعرف: ${id}`);
+            }
             return emp;
         } catch (error) {
 
             throw new BadRequestException("No Emp found with ID: ${id}");
         }
-
-        
     }
+    
     async findByEmail(email: string) {
         try {
             const emp = await this.empModel.findById(email)

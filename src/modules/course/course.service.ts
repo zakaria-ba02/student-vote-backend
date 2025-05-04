@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
@@ -7,54 +7,73 @@ import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
 
+@Injectable()
 export class CourseService {
     constructor(
         @InjectModel(Course.name) private readonly courseModel: Model<Course>,
-        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,
+        
     ) { }
-
 
     async createCourse(createDto: CreateCourseDto) {
         try {
+            const prerequisites = await this.courseModel.find({
+                courseCode: { $in: createDto.prerequisites || [] }
+            }).select('courseCode').exec();
 
-            const course = await this.courseModel.create(createDto);
-            return await course.save();
+            const createdCourse = new this.courseModel({
+                ...createDto,
+                prerequisites: prerequisites.map(c => c.courseCode)
+            });
+            return createdCourse.save();
         } catch (error) {
-            throw new BadRequestException("Error in Creating Course");
+            throw new BadRequestException(`Error creating course: ${error.message}`);
         }
     }
     async getAllCourse() {
         try {
-            const course = await this.courseModel.find({});
+            const course = await this.courseModel.find({}).populate('prerequisites').exec();
             return course;
         } catch (error) {
-            throw new BadRequestException("No course found ");
+            throw new BadRequestException("Failed to fetch courses");
         }
     }
 
     async getAllOpenCourse(year: YearEnum) {
-        const courses = await this.courseModel.find({ isOpen: true, year }).exec();
-        return courses;
+        try {
+            return await this.courseModel.find({ isOpen: true, year }).exec();
+        } catch (error) {
+            throw new BadRequestException(`Failed to fetch open courses for year ${year}`);
+        }
     }
+
     async openCourse(id: string, isOpen: boolean) {
-        const course = await this.courseModel.findByIdAndUpdate(id, { isOpen: isOpen }, { upsert: true, new: true });
-        return course;
+        try {
+            const course = await this.courseModel.findByIdAndUpdate(
+                id,
+                { isOpen },
+                { new: true }
+            );
+            if (!course) throw new NotFoundException(`Course with ID ${id} not found`);
+            return course;
+        } catch (error) {
+            throw new BadRequestException(`Failed to update course status: ${error.message}`);
+        }
     }
 
 
     async getCourseById(id: string) {
         try {
-            const course = await this.courseModel.findById(id)
+            const course = await this.courseModel.findById(id).populate('prerequisites').exec();
+            if (!course) throw new NotFoundException(`No course found with ID: ${id}`);
             return course;
         } catch (error) {
-
-            throw new BadRequestException("No Course found with ID: ${id}");
+            throw new BadRequestException(`Failed to fetch course with ID ${id}: ${error.message}`);
         }
     }
 
     async updateCourse(id: string, course: UpdateCourseDto) {
         try {
-            await this.courseModel.findByIdAndUpdate(id, course, { upsert: true })
+            await this.courseModel.findByIdAndUpdate(id, course, { upsert: true }).exec()
         } catch (error) {
             throw new BadRequestException("Failed to update Course with ID: ${id}: ${error.message}");
         }
@@ -74,25 +93,26 @@ export class CourseService {
 
     //فتح المادة حسب السنة
     async openCourseOfYear(year: YearEnum) {
-        return await this.courseModel.updateMany({ year }, {
-            isOpen: true
-        }).exec();
+        try {
+            return await this.courseModel.updateMany({ year }, {
+                isOpen: true
+            }).exec();
+        } catch (error) {
+            throw new BadRequestException(`Failed to open Course with year: ${year}: ${error.message}`);
+        }
     }
 
-    // إرجاع قائمة المواد الدراسية المتاحة للطالب بناءً على السنة 
-    // async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
-    //     const courses = await this.courseModel.find({
-    //         year: { $lte: year },
-    //         isOpen: true
-    //     }).exec();
-    //     let courseIds = courses.map(c => c._id);
-    //     //جلب المواد الراسبة او التي لم يجتازها
-    //     courseIds=courseIds.filter(async (c:string)=>{
-    //       return await  this.prerequestiesService.checkCourseIsAvaibale(c,studentId);
-    //     })
-    //     const avaibleCourses = await this.courseModel.find({
-    //         _id: { $in: courseIds }
-    //     }).exec();
-    //     return avaibleCourses;
-    // }
+    async getPrerequisites(courseCode: string): Promise<Course[]> {
+        try {
+            const course = await this.courseModel.findOne({ courseCode })
+                .populate('prerequisites')
+                .exec();
+
+            if (!course) throw new NotFoundException(`Course with code ${courseCode} not found`);
+            return course?.prerequisites as Course[] || [];
+        } catch (error) {
+            throw new BadRequestException(`Failed to get prerequisites: ${error.message}`)
+        }
+    }
+
 }
