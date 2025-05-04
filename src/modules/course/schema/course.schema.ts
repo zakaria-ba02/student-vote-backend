@@ -36,7 +36,7 @@ export class Course extends Document {
 
 
     @Prop({ required: true, default: 3 })
-    creditHours: number;
+    creditHour: number;
 
     @Prop({ref:Course.name, required:false})
     prerequest_course_id:string
