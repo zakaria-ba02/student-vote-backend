@@ -1,11 +1,10 @@
-import { IsInt, IsString, isString } from "class-validator";
+import { IsArray, ArrayMinSize, ArrayMaxSize, IsString } from "class-validator";
 
 export class CreatVoteDto {
-
-    //! YOU SHOULD REMOVE THE STUDENT ID AND GET THE STUDENT ID FROM THE JWT PAYLOAD
-  
-    @IsString()
-    courseId: string;
-    @IsString()
-    vote: string;
+    @IsArray()
+    @ArrayMinSize(4, { message: "يجب التصويت على 4 مواد على الأقل." })
+    @ArrayMaxSize(6, { message: "يجب التصويت على 6 مواد كحد أقصى." })
+    @IsString({ each: true })
+    courseIds: string[];
+    
 }

@@ -1,12 +1,13 @@
-import { IsNotEmpty, IsNumber, IsString, isString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { YearEnum } from "src/common/enums/year.enum";
 
 export class CreateStudentDto {
     @IsString()
     name: string;
     @IsString()
     major: string;
-    @IsString()
-    year: string;
+    @IsEnum(YearEnum)
+    year: YearEnum;
     @IsNumber()
     universityId: number;
     @IsString()

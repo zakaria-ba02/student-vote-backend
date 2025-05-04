@@ -1,31 +1,30 @@
 import { BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model } from "mongoose";
 import { Student } from "../student/schema/student.schema";
-import { CreateMarkeDto } from "./dto/create.dto";
+import { CreateMarkDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
-import { Marke } from "./schema/mark.schema";
+import { Mark } from "./schema/mark.schema";
 
 export class MarkService {
     constructor(
-        @InjectModel(Marke.name) private readonly markModel: Model<Marke>,
+        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,
         @InjectModel(Student.name) private readonly studentModel: Model<Student>
     ) { }
-    async createMarke(createDto: CreateMarkeDto,studentId: string) {
+    async createMark(createDto: CreateMarkDto, studentId: string) {
         try {
-          
+
             const mark = await this.markModel.create({ ...createDto, studentId: studentId })
             return await mark.save();
         } catch (error) {
-            console.log(error);
-            
+
             throw new BadRequestException("Error in Creating Mark");
         }
     }
 
     async getAllMark() {
         try {
-            const mark = await this.markModel.find({}).populate("studentId","name").populate("courseId").exec();
+            const mark = await this.markModel.find({}).populate("studentId", "name").populate("courseId").exec();
             return mark;
         } catch (error) {
             throw new BadRequestException("No Mark found ");
@@ -34,8 +33,8 @@ export class MarkService {
 
     async getMarkById(id: string) {
         try {
-            const marke = await this.markModel.findById({ id: id })
-            return marke;
+            const mark= await this.markModel.findById({ id: id })
+            return mark;
         } catch (error) {
 
             throw new BadRequestException("No Mark found with ID: ${id}");
@@ -45,17 +44,17 @@ export class MarkService {
 
     async getMarkByStudentId(studentId: string) {
         try {
-            const marke = await this.markModel.find({
+            const mark = await this.markModel.find({
                 studentId: studentId
             }).exec();
 
-            return marke;
+            return mark;
         } catch (error) {
             throw new BadRequestException("No Mark found with ID: ${id}");
         }
     }
 
-    async updateMark(id: number, course: UpdateMarkDto) {
+    async updateMark(id: string, course: UpdateMarkDto) {
         try {
             await this.markModel.findByIdAndUpdate(id, course)
         } catch (error) {

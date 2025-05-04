@@ -1,10 +1,8 @@
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CreateEmpDto } from "../emp/dtos/create.dto";
-import { EmpService } from "../emp/emp.service";
 import { CreateStudentDto } from "../student/dtos/create.dto";
 import { LoginStudentDto } from "../student/dtos/login.dto";
-import { StudentService } from "../student/student.service";
 import * as bcrypt from 'bcryptjs';
 import { LoginEmpDto } from "../emp/dtos/login.dto";
 import { InjectModel } from "@nestjs/mongoose";
@@ -23,22 +21,46 @@ export class AuthService {
 
     async registerEmp(emp: CreateEmpDto) {
         try {
+            const existingEmp = await this.empModel.findOne({ email: emp.email });
+            if (existingEmp) {
+                throw new BadRequestException('Email already exists');
+            }
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(emp.password, salt);
+            emp.password = hashPassword;
+
             const newEmp = await this.empModel.create(emp);
             return await newEmp.save();
         } catch (error) {
-            throw new BadRequestException('Invalid input');
+            throw new BadRequestException(error.message || 'Invalid input');
         }
     }
 
 
     async registerStudent(student: CreateStudentDto) {
         try {
-            return await this.empModel.create(student);
+            const existingStudent = await this.studentModel.findOne({
+                universityId: student.universityId
+            });
 
+            if (existingStudent) {
+                throw new ConflictException(' الرقم الجامعي مسجل مسبقاً');
+            }
+            const salt = await bcrypt.genSalt(10);
+            const hashPassword = await bcrypt.hash(student.password, salt);
+            student.password = hashPassword;
+
+            const newStudent = await this.studentModel.create(student);
+            return await newStudent.save();
         } catch (error) {
-            throw new BadRequestException('Invalid input');
+            if (error instanceof ConflictException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('حدث خطأ أثناء تسجيل الطالب');
         }
     }
+
+    
     async loginStudent(loginDto: LoginStudentDto) {
         const student = await this.studentModel.findOne({ universityId: loginDto.universityId });
         if (!student) {
@@ -67,7 +89,8 @@ export class AuthService {
         if (!emp) {
             throw new UnauthorizedException('email or password wrong');
         }
-        const isCorrect = await bcrypt.compare(loginEmpDto.password, emp.password)
+        const isCorrect = await bcrypt.compare(loginEmpDto.password, emp.password);
+
         if (isCorrect) {
             return {
                 message: "Login Successfully",
@@ -82,8 +105,5 @@ export class AuthService {
         } else {
             throw new UnauthorizedException('email or password wrong');
         }
-
     }
-
-
 }

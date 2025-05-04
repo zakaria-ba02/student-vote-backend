@@ -1,12 +1,10 @@
-import { IsInt, IsMongoId, IsString } from "class-validator";
+import { IsMongoId, IsString } from "class-validator";
 
-export class CreateMarkeDto {
+export class CreateMarkDto {
     @IsString()
     @IsMongoId()
     courseId: string;
     
-    
-
     @IsString()
     mark: string;
 
