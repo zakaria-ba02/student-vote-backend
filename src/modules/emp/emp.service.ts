@@ -12,7 +12,7 @@ export class EmpService {
     ) { }
 
 
-    async createEmp(createDto: CreateEmpDto) {
+    async createEmp(createDto: CreateEmpDto): Promise<Emp> {
         try {
             const salt = await bcrypt.genSalt(10);
             const hashPassword = await bcrypt.hash(createDto.password, salt);
@@ -20,7 +20,8 @@ export class EmpService {
             const emp = await this.empModel.create(createDto);
             return await emp.save();
         } catch (error) {
-            throw new BadRequestException("Error in Creating Emp");
+            console.error('Error in createEmp:', error);
+        throw new BadRequestException(`Error creating employee: ${error.message}`);
         }
     }
 
@@ -28,9 +29,14 @@ export class EmpService {
 
     async getAllEmp(): Promise<Emp[]> {
         try {
-            return await this.empModel.find({});
+            const employees = await this.empModel.find({});
+            if (!employees || employees.length === 0) {
+                throw new BadRequestException('No employees found');
+            }
+            return employees;
         } catch (error) {
-            throw new BadRequestException("No Emp found ");
+            console.error('Error in getAllEmp:', error);
+            throw new BadRequestException(`Failed to retrieve employees: ${error.message}`);
         }
     }
     async getEmpById(id: string) {
@@ -41,17 +47,20 @@ export class EmpService {
             }
             return emp;
         } catch (error) {
-
-            throw new BadRequestException("No Emp found with ID: ${id}");
+            throw new NotFoundException(`Error finding employee with ID ${id}: ${error.message}`);
         }
     }
     
     async findByEmail(email: string) {
         try {
-            const emp = await this.empModel.findById(email)
-            return emp
+            const emp = await this.empModel.findOne({ email });
+            if (!emp) {
+                throw new NotFoundException(`Employee with email ${email} not found`);
+            }
+            return emp;
         } catch (error) {
-
+            console.error('Error in findByEmail:', error);
+            throw new BadRequestException(`Failed to find employee by email: ${error.message}`);
         }
     }
 
@@ -69,7 +78,7 @@ export class EmpService {
         try {
             await this.empModel.findByIdAndDelete(id)
         } catch (error) {
-            throw new BadRequestException("Failed to delete Emp with ID: ${id}: ${error.message}");
+            throw new NotFoundException(`Error deleting employee with ID ${id}: ${error.message}`);
         }
         return { message: "Emp deleted successfully" }
     }

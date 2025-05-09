@@ -42,6 +42,11 @@ export class Student extends Document {
     })
     completedHours: number;
 
+    @Prop()
+    academicStatus :number
+
+    @Prop()
+    cumulativeGPA :number
    
 
 

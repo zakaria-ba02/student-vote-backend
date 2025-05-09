@@ -18,18 +18,9 @@ export class JwtStrategy extends PassportStrategy(Strategy as any) {
         if (!payload.role) {
             throw new UnauthorizedException('Role is missing in JWT payload');
         }
+        console.log(payload);
 
-        if (payload.role === (Role.ADMIN || Role.EMP)) {
-            return {
-                _id:payload._id,
-                name: payload.name,
-                role: payload.role,
-                email: payload.email,
-                dob: payload.dob
-            };
-        }
-
-
+        
         if (payload.role === Role.STUDENT) {
             return {
                 _id:payload._id,
@@ -40,11 +31,16 @@ export class JwtStrategy extends PassportStrategy(Strategy as any) {
                 role: payload.role,
 
             };
-        }
-        console.log(payload);
-        
-        throw new UnauthorizedException('Invalid role');
-    }
+        }else{
+            return {
+                _id:payload._id,
+                name: payload.name,
+                role: payload.role,
+                email: payload.email,
+                dob: payload.dob
+            };
+        }    
+          }
 
 
 }

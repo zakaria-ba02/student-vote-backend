@@ -6,9 +6,12 @@ export class CreateMarkDto {
     courseId: string;
     
     @IsString()
-    mark: string;
+    mark: number;
 
     @IsString()
     type: string;
+    
+    @IsString()
+    studentId:string
     
 }

@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { CreateStudentDto } from "./dtos/create.dto";
@@ -28,7 +28,7 @@ export class StudentService {
             const student = await this.studentModel.create(createStudentDto)
             return await student.save()
         } catch (error) {
-            throw new BadRequestException("Error in Creating Studing");
+            throw new BadRequestException(`Failed to create student with id: {id}: ${error.message}`);
         }
     }
 
@@ -47,8 +47,7 @@ export class StudentService {
             const student = await this.studentModel.findById(id).exec();
             return student;
         } catch (error) {
-
-            throw new BadRequestException("No student found with ID: ${id}");
+            throw new NotFoundException(`Student with ID ${id} not found`);
         }
 
     }
@@ -70,13 +69,13 @@ export class StudentService {
             throw new BadRequestException("No student found with UniversityId: ${id}");
         }
     }
-    
+
 
     async updateStudent(id: string, student: UpdateStudentDto) {
         try {
             await this.studentModel.findByIdAndUpdate(id, student)
         } catch (error) {
-            throw new BadRequestException("Failed to update student with ID: ${id}: ${error.message}");
+            throw new BadRequestException(`Failed to update student with ID: ${id}: ${error.message}`);
         }
         return { message: "Student updated successfully" }
     }
@@ -85,73 +84,103 @@ export class StudentService {
         try {
             await this.studentModel.findByIdAndDelete(id)
         } catch (error) {
-            throw new BadRequestException("Failed to delete student with ID: ${id}: ${error.message}");
+            throw new BadRequestException(`Failed to delete student with ID: ${id}: ${error.message}`);
         }
         return { message: "Student deleted successfully" }
     }
 
 
     async calculateSemesterGPA(studentId: string, year: YearEnum, semester: number): Promise<number> {
-        // استرجاع العلامات للطالب
-        const marks = await this.markModel.find({ studentId }).exec();
-        // استرجاع المواد التي تم اجتيازها (علامة فوق 50)
-        const passedMarks = marks.filter(mark => mark.mark >= 50);
-
-        // استرجاع الساعات المعتمدة الخاصة بكل مادة
-        const courseIds = passedMarks.map(mark => mark.courseId);
-        const courses = await this.courseModel.find({ _id: { $in: courseIds }, year, semester:semester }).exec();
-
-        // حساب المعدل الفصلي
-        let totalCredits = 0;
-        let weightedSum = 0;
-
-        passedMarks.forEach(mark => {
-            const course = courses.find(course => course._id.toString() === mark.courseId.toString());
-            if (course) {
-                totalCredits += course.creditHours;
-                weightedSum += gpaMark(mark.mark).point * course.creditHours;
-                console.log("POINT :", gpaMark(mark.mark).point, "with mark :", mark.mark);
-
-                console.log("Total :", totalCredits, "weightedSum :", weightedSum);
-
+        try {
+            // Validate inputs
+            if (!studentId || !year || semester === undefined) {
+                throw new BadRequestException('Missing required parameters');
             }
-        });
 
-        if (totalCredits === 0) {
-            return 0; // إذا لم يكن هناك مواد ناجحة
+            // Retrieve student marks
+            const marks = await this.markModel.find({ studentId }).exec();
+
+            // Filter passed marks (>= 50)
+            const passedMarks = marks.filter(mark => mark.mark >= 50);
+
+            // Retrieve courses info for passed subjects
+            const courseIds = passedMarks.map(mark => mark.courseId);
+            const courses = await this.courseModel.find({
+                _id: { $in: courseIds },
+                year,
+                semester
+            }).exec();
+
+            // Calculate semester GPA
+            let totalCredits = 0;
+            let weightedSum = 0;
+
+            passedMarks.forEach(mark => {
+                const course = courses.find(c => c._id.toString() === mark.courseId.toString());
+                if (course) {
+                    totalCredits += course.creditHours;
+                    const gpa = gpaMark(mark.mark);
+                    weightedSum += gpa.point * course.creditHours;
+
+                    console.log(`POINT: ${gpa.point} with mark: ${mark.mark}`);
+                    console.log(`Total: ${totalCredits} weightedSum: ${weightedSum}`);
+                }
+            });
+
+            if (totalCredits === 0) {
+                return 0; // No passed courses
+            }
+
+            return weightedSum / totalCredits;
+
+        } catch (error) {
+            console.error(`Error calculating semester GPA for student ${studentId}:`, error);
+            throw new InternalServerErrorException('Failed to calculate semester GPA');
+
+
         }
-
-        return weightedSum / totalCredits;
     }
 
     // حساب المعدل التراكمي (بمراعاة المواد الناجحة فقط)
     async calculateCumulativeGPA(studentId: string): Promise<number> {
-        const allMarks = await this.markModel.find({ studentId }).exec();
-
-        // استرجاع العلامات للمواد الناجحة فقط
-        const passedMarks = allMarks.filter(mark => mark.mark >= 50);
-
-
-        // استرجاع الساعات المعتمدة الخاصة بكل مادة
-        const courseIds = passedMarks.map(mark => mark.courseId);
-        const courses = await this.courseModel.find({ _id: { $in: courseIds } }).exec();
-
-
-        let totalCredits = 0;
-        let weightedSum = 0;
-
-        passedMarks.forEach(mark => {
-            const course = courses.find(course => course._id.toString() === mark.courseId.toString());
-            if (course) {
-                totalCredits += course.creditHours;
-                weightedSum += gpaMark(mark.mark).point * course.creditHours;
+        try {
+            // Validate input
+            if (!studentId) {
+                throw new BadRequestException('Student ID is required');
             }
-        });
 
-        if (totalCredits === 0) {
-            return 0; // إذا لم يكن هناك مواد ناجحة
+            // Retrieve all marks
+            const allMarks = await this.markModel.find({ studentId }).exec();
+
+            // Filter passed marks (>= 50)
+            const passedMarks = allMarks.filter(mark => mark.mark >= 50);
+
+            // Retrieve courses info
+            const courseIds = passedMarks.map(mark => mark.courseId);
+            const courses = await this.courseModel.find({ _id: { $in: courseIds } }).exec();
+
+            // Calculate cumulative GPA
+            let totalCredits = 0;
+            let weightedSum = 0;
+
+            passedMarks.forEach(mark => {
+                const course = courses.find(c => c._id.toString() === mark.courseId.toString());
+                if (course) {
+                    totalCredits += course.creditHours;
+                    weightedSum += gpaMark(mark.mark).point * course.creditHours;
+                }
+            });
+
+            if (totalCredits === 0) {
+                return 0; // No passed courses
+            }
+
+            return weightedSum / totalCredits;
+
+        } catch (error) {
+            console.error(`Error calculating cumulative GPA for student ${studentId}:`, error);
+            // Alternative options:
+            throw new InternalServerErrorException('Failed to calculate cumulative GPA');
         }
-
-        return weightedSum / totalCredits;
     }
 }

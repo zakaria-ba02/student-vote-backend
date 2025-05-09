@@ -9,8 +9,8 @@ export class Vote extends Document {
     studentId: string;
     @Prop({ required: true, ref: Course.name })
     courseId: string;
-    @Prop({ required: true })
-    vote: string;
+    @Prop()
+    vote?: string;
     @Prop()
     createdAt: Date;
 }

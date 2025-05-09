@@ -7,6 +7,7 @@ import { Role } from "../emp/enums/role.enum";
 import { CreateMarkDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
 import { MarkService } from "./marke.service";
+import { BulkImportMarkDto } from "./dto/bulk-import-mark.dto";
 
 
 @Controller("mark")
@@ -16,25 +17,31 @@ export class MarkController {
         private readonly markService: MarkService
     ) { }
 
-    @Post("create-marks")
-    // @Roles(Role.EMP)
-    async createMark(@Body() createDto: CreateMarkDto, @GetStudentId() studentId: string) {
-        return await this.markService.createMark(createDto, studentId);
+    // @Post("create-marks")
+    // // @Roles(Role.EMP)
+    // async createMark(@Body() createDto: CreateMarkDto, @GetStudentId() studentId: string) {
+    //     return await this.markService.createMark(createDto, studentId);
+    // }
+    @Roles(Role.EMP)
+    @Post('bulk-import')
+    async bulkImport(@Body() bulkImportDto: BulkImportMarkDto[]) {
+        return this.markService.bulkImportMarks(bulkImportDto);
     }
 
-    @Roles(Role.EMP,Role.STUDENT)
+
+    @Roles(Role.EMP, Role.STUDENT)
     @Get("get-my-marks")
     async getMyMarks(@GetStudentId() studentId: string) {
         return await this.markService.getMarkByStudentId(studentId);
     }
 
-    @Roles(Role.EMP,Role.STUDENT)
+    @Roles(Role.EMP, Role.STUDENT)
     @Get("get-all-marks")
     async getAllMark() {
         return await this.markService.getAllMark();
     }
 
-    @Roles(Role.EMP,Role.STUDENT)
+    @Roles(Role.EMP, Role.STUDENT)
     @Get('find-by-id/:id')
     async getMarkById(@Param('id') id: string) {
         return await this.markService.getMarkById(id);

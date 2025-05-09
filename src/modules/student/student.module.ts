@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Student, StudentSchema } from "./schema/student.schema";
 import { StudentController } from "./student.controller";
@@ -25,7 +25,7 @@ import { Mark, MarkSchema } from "../mark/schema/mark.schema";
             },
         ]),
         CourseModule,
-        MarkModule
+        forwardRef(() =>  MarkModule)
     ],
     controllers: [StudentController],
     providers: [StudentService],

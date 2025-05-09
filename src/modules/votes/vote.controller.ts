@@ -21,8 +21,7 @@ export class VoteController {
     //     return await this.voteService.createVote(createVoteDto, studentId);
     // }
     @Post("create-vote")
-    async createVote(@Body() createVoteDto: CreatVoteDto, @Req() req) {
-        const studentId = req.user.id; // تأكد أن middleware أو JWT يوفر ID الطالب
+    async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
         return this.voteService.createVote(createVoteDto, studentId);
     }
 

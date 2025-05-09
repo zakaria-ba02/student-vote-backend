@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
-import { Mark } from "../mark/schema/mark.schema";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
@@ -31,18 +30,33 @@ export class CourseService {
     }
     async getAllCourse() {
         try {
-            const course = await this.courseModel.find({}).populate('prerequisites').exec();
-            return course;
+            const courses = await this.courseModel.find({})
+                .populate('prerequisites')
+                .exec();
+    
+            if (!courses || courses.length === 0) {
+                throw new BadRequestException('No courses found');
+            }
+    
+            return courses;
         } catch (error) {
-            throw new BadRequestException("Failed to fetch courses");
+            console.error('Error in getAllCourse:', error);
+            throw new BadRequestException(`Failed to fetch courses: ${error.message}`);
         }
     }
 
     async getAllOpenCourse(year: YearEnum) {
         try {
-            return await this.courseModel.find({ isOpen: true, year }).exec();
+            const courses = await this.courseModel.find({ isOpen: true, year }).exec();
+    
+            if (!courses || courses.length === 0) {
+                throw new BadRequestException(`No open courses found for year ${year}`);
+            }
+    
+            return courses;
         } catch (error) {
-            throw new BadRequestException(`Failed to fetch open courses for year ${year}`);
+            console.error(`Error in getAllOpenCourse for year ${year}:`, error);
+            throw new BadRequestException(`Failed to fetch open courses for year ${year}: ${error.message}`);
         }
     }
 
@@ -73,21 +87,35 @@ export class CourseService {
 
     async updateCourse(id: string, course: UpdateCourseDto) {
         try {
-            await this.courseModel.findByIdAndUpdate(id, course, { upsert: true }).exec()
+            const updated = await this.courseModel.findByIdAndUpdate(id, course, { new: true });
+    
+            if (!updated) {
+                throw new BadRequestException(`Course with ID ${id} not found`);
+            }
+    
+            return { message: "Course updated successfully", updatedCourse: updated };
         } catch (error) {
-            throw new BadRequestException("Failed to update Course with ID: ${id}: ${error.message}");
+            console.error(`Error updating course with ID ${id}:`, error);
+            throw new BadRequestException(`Failed to update course with ID ${id}: ${error.message}`);
         }
-        return { message: " updated Course successfully" }
     }
+    
 
     async deleteCourse(id: string) {
         try {
-            await this.courseModel.findByIdAndDelete(id)
+            const deleted = await this.courseModel.findByIdAndDelete(id);
+    
+            if (!deleted) {
+                throw new BadRequestException(`Course with ID ${id} not found`);
+            }
+    
+            return { message: "Course deleted successfully", deletedCourse: deleted };
         } catch (error) {
-            throw new BadRequestException("Failed to delete Course with ID: ${id}: ${error.message}");
+            console.error(`Error deleting course with ID ${id}:`, error);
+            throw new BadRequestException(`Failed to delete course with ID ${id}: ${error.message}`);
         }
-        return { message: "Course deleted successfully" }
     }
+    
 
 
 

@@ -29,7 +29,7 @@ export class Course extends Document {
     // @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
     // parent: Course;
 
-    @Prop({ default: true })
+    @Prop({ default: false })
     isVotingOpen: boolean;
 
     @Prop({ required: true, default: 3 })
