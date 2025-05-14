@@ -18,13 +18,7 @@ export class CourseController {
   prerService: any;
   constructor(private readonly courseService: CourseService) { }
 
-  // @Roles(Role.ADMIN)
-  // @Post("create-course")
-  // async createCourse(@Body() createDto: CreateCourseDto) {
-  //   return await this.courseService.createCourse(createDto);
-  // }
-
-
+  @Roles(Role.ADMIN)
   @Post("create-course")
   create(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
     return this.courseService.createCourse(createCourseDto);

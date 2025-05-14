@@ -4,6 +4,7 @@ export enum YearEnum{
     THIRD=3,
     FOURTH=4,
     FIFTH=5,
+    ofGraduates=6,
     GRADUATED = 7,
-    ofGraduates=6
+    
 }

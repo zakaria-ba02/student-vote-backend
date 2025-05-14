@@ -10,6 +10,7 @@ import { Emp } from "../emp/schema/emp.schema";
 import { Model } from "mongoose";
 import { Student } from "../student/schema/student.schema";
 import { Role } from "../emp/enums/role.enum";
+import { LoginAdminDto } from "../emp/dtos/login-admin.dto";
 
 @Injectable()
 export class AuthService {
@@ -100,6 +101,30 @@ export class AuthService {
                     _id: emp._id,
                     email: emp.email,
                     dob: emp.dob
+                }),
+                user:emp
+            }
+        } else {
+            throw new UnauthorizedException('email or password wrong');
+        }
+    }
+
+    async loginAdmin(loginAdminDto: LoginAdminDto) {
+        const admin = await this.empModel.findOne({ email: loginAdminDto.email })
+        if (!admin) {
+            throw new UnauthorizedException('email or password wrong');
+        }
+        const isCorrect = await bcrypt.compare(loginAdminDto.password, admin.password);
+
+        if (isCorrect) {
+            return {
+                message: "Login Successfully",
+                access_token: this.jwtService.sign({
+                    name: admin.name,
+                    role: admin.role,
+                    _id: admin._id,
+                    email: admin.email,
+                    dob: admin.dob
                 })
             }
         } else {
