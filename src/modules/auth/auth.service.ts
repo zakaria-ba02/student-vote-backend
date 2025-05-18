@@ -78,7 +78,8 @@ export class AuthService {
                     role: Role.STUDENT,
                     universityId: student.universityId,
                     _id: student._id
-                })
+                }),
+                student
             }
         } else {
             throw new UnauthorizedException('universityId or password wrong');
