@@ -17,7 +17,7 @@ export class MarkController {
     ) { }
 
 
-    @Roles(Role.EMP)
+    @Roles(Role.EMP,Role.ADMIN)
     @Post('bulk-import')
     async bulkImport(@Body() bulkImportDto: BulkImportMarkDto[]) {
         return this.markService.bulkImportMarks(bulkImportDto);
