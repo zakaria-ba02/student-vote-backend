@@ -90,7 +90,7 @@ export class StudentService {
     }
 
 
-    async calculateSemesterGPA(studentId: string, year: YearEnum, semester: number): Promise<number> {
+    async calculateSemesterGPA(studentId: string, year: YearEnum, semester: number): Promise<{gpa:number,credit:number}> {
         try {
             // Validate inputs
             if (!studentId || !year || semester === undefined) {
@@ -128,10 +128,10 @@ export class StudentService {
             });
 
             if (totalCredits === 0) {
-                return 0; // No passed courses
+                return {gpa: 0, credit: totalCredits}; // No passed courses
             }
 
-            return weightedSum / totalCredits;
+            return { gpa: weightedSum / totalCredits, credit: totalCredits };
 
         } catch (error) {
             console.error(`Error calculating semester GPA for student ${studentId}:`, error);
@@ -142,7 +142,7 @@ export class StudentService {
     }
 
     // حساب المعدل التراكمي (بمراعاة المواد الناجحة فقط)
-    async calculateCumulativeGPA(studentId: string) {
+    async calculateCumulativeGPA(studentId: string):Promise<{gpa:number,credit:number}> {
         try {
             // Validate input
             if (!studentId) {
@@ -172,7 +172,7 @@ export class StudentService {
             });
 
             if (totalCredits === 0) {
-                return 0; // No passed courses
+                return {gpa: 0, credit: totalCredits}; // No passed courses
             }
 
             return { gpa: weightedSum / totalCredits, credit: totalCredits };

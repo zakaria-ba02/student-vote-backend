@@ -80,7 +80,7 @@ export class MarkService {
                     if (createDto.mark >= 50) {
                         student.completedHours += course.creditHours;
                         student.academicStatus = academicHours(student.completedHours);
-                        student.cumulativeGPA = await this.studentService.calculateCumulativeGPA(createDto.studentId);
+                        student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
                         await student.save();
                     }
 
