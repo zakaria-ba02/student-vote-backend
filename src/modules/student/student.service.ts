@@ -142,7 +142,7 @@ export class StudentService {
     }
 
     // حساب المعدل التراكمي (بمراعاة المواد الناجحة فقط)
-    async calculateCumulativeGPA(studentId: string): Promise<number> {
+    async calculateCumulativeGPA(studentId: string) {
         try {
             // Validate input
             if (!studentId) {
@@ -175,7 +175,7 @@ export class StudentService {
                 return 0; // No passed courses
             }
 
-            return weightedSum / totalCredits;
+            return { gpa: weightedSum / totalCredits, credit: totalCredits };
 
         } catch (error) {
             console.error(`Error calculating cumulative GPA for student ${studentId}:`, error);
