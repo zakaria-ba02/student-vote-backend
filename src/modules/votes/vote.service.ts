@@ -70,14 +70,72 @@ export class VoteService {
         }
     }
 
-    async getAllVote() {
+       async getAllVote() {
         try {
-            const vote = await this.voteModel.find({}).populate("studentId").populate("courseId").exec();
-            return vote;
+            const voteAggregation = await this.voteModel.aggregate([
+                {
+                    $group: {
+                        _id: "$courseId",
+                        voteCount: { $sum: 1 },
+                        voters: { $push: "$studentId" }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "courses",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "courseInfo"
+                    }
+                },
+                {
+                    $unwind: "$courseInfo"
+                },
+                {
+                    $lookup: {
+                        from: "students",
+                        localField: "voters",
+                        foreignField: "_id",
+                        as: "voterInfo"
+                    }
+                },
+                {
+                    $project: {
+                        courseId: "$_id",
+                        courseName: "$courseInfo.name",
+                        courseCode: "$courseInfo.courseCode",
+                        voteCount: 1,
+                        graduatingVotersCount: {
+                            $size: {
+                                $filter: {
+                                    input: "$voterInfo",
+                                    as: "student",
+                                    cond: { $gte: ["$$student.completedHours", 150] }
+                                }
+                            }
+                        },
+                        voters: {
+                            $map: {
+                                input: "$voterInfo",
+                                as: "student",
+                                in: {
+                                    studentId: "$$student._id",
+                                    name: "$$student.name",
+                                    universityId: "$$student.universityId",
+                                    isGraduating: { $gte: ["$$student.completedHours", 150] }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]);
+
+            return voteAggregation;
         } catch (error) {
             throw new NotFoundException(`Votes not found: ${error.message}`);
         }
     }
+
 
     //جلب الاصوات على مادة معينة
     async getAllVotedCourse(courseId: string, startDate: Date, endDate: Date) {
