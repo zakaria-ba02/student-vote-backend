@@ -29,6 +29,13 @@ export class Emp extends Document {
 
     @Prop()
     updatedAt:string;
+
+    @Prop({default:true})
+    isActive:boolean;
+
+
+    @Prop({default:null})
+    endDate:Date;
 }
 
 export const EmpSchema = SchemaFactory.createForClass(Emp);

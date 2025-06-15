@@ -7,12 +7,13 @@ import {
   import { Reflector } from "@nestjs/core";
   import { Role } from "src/modules/emp/enums/role.enum";
 import { ROLES_KEY } from "../decoraters/roles";
+import { EmpService } from "src/modules/emp/emp.service";
   
   @Injectable()
   export class RolesGuard implements CanActivate {
-    constructor(private reflector: Reflector) {}
+    constructor(private reflector: Reflector,private empService:EmpService) {}
   
-    canActivate(context: ExecutionContext): boolean {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
       const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
         context.getHandler(),
         context.getClass(),
@@ -28,7 +29,12 @@ import { ROLES_KEY } from "../decoraters/roles";
         throw new ForbiddenException("You do not have permission to access this resource");
       }
   
+      if(user.role==Role.EMP){
+      const isActive= await this.empService.isActive(user._id);
+      return isActive;
+      }else{
       return true;
+      }
     }
   }
   

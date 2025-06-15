@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Student } from "../student/schema/student.schema";
 import { CreateMarkDto } from "./dto/create.dto";
 import { UpdateMarkDto } from "./dto/update.dto";
@@ -26,92 +26,189 @@ export class MarkService {
             throw new BadRequestException(`Error creating mark: ${error.message}`);
         }
     }
+    // async bulkImportMarks(createDtos: BulkImportMarkDto[]) {
+    //     try {
+    //         const results = [];
+
+    //         for (const createDto of createDtos) {
+    //             try {
+    //                 // Validate course exists
+    //                 const course = await this.courseModel.findById(createDto.courseId);
+    //                 if (!course) {
+    //                     results.push({
+    //                         studentId: createDto.studentId,
+    //                         courseId: createDto.courseId,
+    //                         success: false,
+    //                         message: "Course not found"
+    //                     });
+    //                     continue;
+    //                 }
+
+    //                 // Validate student exists
+    //                 const student = await this.studentModel.findById(createDto.studentId);
+    //                 if (!student) {
+    //                     results.push({
+    //                         studentId: createDto.studentId,
+    //                         courseId: createDto.courseId,
+    //                         success: false,
+    //                         message: "Student not found"
+    //                     });
+    //                     continue;
+    //                 }
+
+    //                 // Check if mark already exists for this student/course/type
+    //                 const existingMark = await this.markModel.findOne({
+    //                     studentId: createDto.studentId,
+    //                     courseId: createDto.courseId,
+    //                     type: createDto.type
+    //                 });
+
+    //                 if (existingMark) {
+    //                     results.push({
+    //                         studentId: createDto.studentId,
+    //                         courseId: createDto.courseId,
+    //                         success: false,
+    //                         message: "Mark already exists for this student/course/type combination"
+    //                     });
+    //                     continue;
+    //                 }
+
+    //                 // Create new mark
+    //                 const mark = await this.markModel.create(createDto);
+
+    //                 // Update student's completed hours and GPA if mark is passing
+    //                 if (createDto.mark >= 50) {
+    //                     student.completedHours += course.creditHours;
+    //                     student.academicStatus = academicHours(student.completedHours);
+    //                     student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
+    //                     await student.save();
+    //                 }
+
+    //                 results.push({
+    //                     studentId: createDto.studentId,
+    //                     courseId: createDto.courseId,
+    //                     success: true,
+    //                     markId: mark._id,
+    //                     updatedHours: student.completedHours,
+    //                     newGPA: student.cumulativeGPA
+    //                 });
+
+    //             } catch (error) {
+    //                 results.push({
+    //                     studentId: createDto.studentId,
+    //                     courseId: createDto.courseId,
+    //                     success: false,
+    //                     message: error.message
+    //                 });
+    //             }
+    //         }
+
+    //         return {
+    //             message: "Bulk import process completed",
+    //             results: results
+    //         };
+
+    //     } catch (error) {
+    //         throw new BadRequestException("Error in bulk import: " + error.message);
+    //     }
+    // }
     async bulkImportMarks(createDtos: BulkImportMarkDto[]) {
-        try {
-            const results = [];
+    try {
+        const results = [];
 
-            for (const createDto of createDtos) {
-                try {
-                    // Validate course exists
-                    const course = await this.courseModel.findById(createDto.courseId);
-                    if (!course) {
-                        results.push({
-                            studentId: createDto.studentId,
-                            courseId: createDto.courseId,
-                            success: false,
-                            message: "Course not found"
-                        });
-                        continue;
-                    }
+        for (const createDto of createDtos) {
+            try {
+                // حول studentId و courseId إلى ObjectId
+                const studentObjectId = new Types.ObjectId(createDto.studentId);
+                const courseObjectId = new Types.ObjectId(createDto.courseId);
 
-                    // Validate student exists
-                    const student = await this.studentModel.findById(createDto.studentId);
-                    if (!student) {
-                        results.push({
-                            studentId: createDto.studentId,
-                            courseId: createDto.courseId,
-                            success: false,
-                            message: "Student not found"
-                        });
-                        continue;
-                    }
-
-                    // Check if mark already exists for this student/course/type
-                    const existingMark = await this.markModel.findOne({
-                        studentId: createDto.studentId,
-                        courseId: createDto.courseId,
-                        type: createDto.type
-                    });
-
-                    if (existingMark) {
-                        results.push({
-                            studentId: createDto.studentId,
-                            courseId: createDto.courseId,
-                            success: false,
-                            message: "Mark already exists for this student/course/type combination"
-                        });
-                        continue;
-                    }
-
-                    // Create new mark
-                    const mark = await this.markModel.create(createDto);
-
-                    // Update student's completed hours and GPA if mark is passing
-                    if (createDto.mark >= 50) {
-                        student.completedHours += course.creditHours;
-                        student.academicStatus = academicHours(student.completedHours);
-                        student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
-                        await student.save();
-                    }
-
-                    results.push({
-                        studentId: createDto.studentId,
-                        courseId: createDto.courseId,
-                        success: true,
-                        markId: mark._id,
-                        updatedHours: student.completedHours,
-                        newGPA: student.cumulativeGPA
-                    });
-
-                } catch (error) {
+                // Validate course exists
+                const course = await this.courseModel.findById(courseObjectId);
+                if (!course) {
                     results.push({
                         studentId: createDto.studentId,
                         courseId: createDto.courseId,
                         success: false,
-                        message: error.message
+                        message: "Course not found"
                     });
+                    continue;
                 }
+
+                // Validate student exists
+                const student = await this.studentModel.findById(studentObjectId);
+                if (!student) {
+                    results.push({
+                        studentId: createDto.studentId,
+                        courseId: createDto.courseId,
+                        success: false,
+                        message: "Student not found"
+                    });
+                    continue;
+                }
+
+                // Check if mark already exists for this student/course/type
+                const existingMark = await this.markModel.findOne({
+                    studentId: studentObjectId,
+                    courseId: courseObjectId,
+                    type: createDto.type
+                });
+
+                if (existingMark) {
+                    results.push({
+                        studentId: createDto.studentId,
+                        courseId: createDto.courseId,
+                        success: false,
+                        message: "Mark already exists for this student/course/type combination"
+                    });
+                    continue;
+                }
+
+                // Prepare data لإنشاء المارك مع ObjectId
+                const markData = {
+                    ...createDto,
+                    studentId: studentObjectId,
+                    courseId: courseObjectId,
+                };
+
+                // Create new mark
+                const mark = await this.markModel.create(markData);
+
+                // Update student's completed hours and GPA if mark is passing
+                if (createDto.mark >= 50) {
+                    student.completedHours += course.creditHours;
+                    student.academicStatus = academicHours(student.completedHours);
+                    student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
+                    await student.save();
+                }
+
+                results.push({
+                    studentId: createDto.studentId,
+                    courseId: createDto.courseId,
+                    success: true,
+                    markId: mark._id,
+                    updatedHours: student.completedHours,
+                    newGPA: student.cumulativeGPA
+                });
+
+            } catch (error) {
+                results.push({
+                    studentId: createDto.studentId,
+                    courseId: createDto.courseId,
+                    success: false,
+                    message: error.message
+                });
             }
-
-            return {
-                message: "Bulk import process completed",
-                results: results
-            };
-
-        } catch (error) {
-            throw new BadRequestException("Error in bulk import: " + error.message);
         }
+
+        return {
+            message: "Bulk import process completed",
+            results: results
+        };
+
+    } catch (error) {
+        throw new BadRequestException("Error in bulk import: " + error.message);
     }
+}
 
     async getAllMark() {
         try {
@@ -134,18 +231,48 @@ export class MarkService {
     }
 
 
+    // async getMarkByStudentId(studentId: string) {
+    //     try {
+    //         const mark = await this.markModel.find({
+    //             studentId: studentId
+    //         }).populate("courseId").exec() as any;
+
+    //         return {
+    //             ...mark,
+    //             course:(mark.courseId),
+    //             courseId:(mark.courseId._id.toString())
+    //         };
+    //     } catch (error) {
+    //         console.error('Error in getMarkByStudentId:', error);
+    //         throw new BadRequestException(`No mark found for student ID: ${studentId}. Error: ${error.message}`);
+    //     }
+    // }
+    
     async getMarkByStudentId(studentId: string) {
         try {
-            const mark = await this.markModel.find({
-                studentId: studentId
-            }).exec();
+            const marks = await this.markModel
+                .find({ studentId })
+                .populate('courseId') 
+                .exec();
 
-            return mark;
+            if (!marks || marks.length === 0) {
+                throw new BadRequestException(`No marks found for student ID: ${studentId}`);
+            }
+
+            return marks.map(mark => ({
+                ...mark.toObject(),
+                course: mark.courseId, 
+                courseId: mark.courseId._id.toString(),
+            }));
         } catch (error) {
             console.error('Error in getMarkByStudentId:', error);
-            throw new BadRequestException(`No mark found for student ID: ${studentId}. Error: ${error.message}`);
+            throw new BadRequestException(
+                `Failed to retrieve marks for student ID: ${studentId}. Error: ${error.message}`
+            );
         }
     }
+
+
 
     async updateMark(id: string, course: UpdateMarkDto) {
         try {

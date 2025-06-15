@@ -76,10 +76,20 @@ export class EmpService {
 
     async deleteEmp(id: string) {
         try {
-            await this.empModel.findByIdAndDelete(id)
+            await this.empModel.findByIdAndUpdate(id,{isActive:false,endDate:Date()});
         } catch (error) {
             throw new NotFoundException(`Error deleting employee with ID ${id}: ${error.message}`);
         }
         return { message: "Emp deleted successfully" }
+    }
+
+
+    async isActive(empid:string):Promise<boolean>{
+        const emp= await this.empModel.findById(empid);
+        if(!emp){
+            throw new NotFoundException("This Emp not found");
+        }
+        const isActive=emp.isActive;
+        return isActive;
     }
 }
