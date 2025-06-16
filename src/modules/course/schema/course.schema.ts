@@ -20,12 +20,14 @@ export class Course extends Document {
     @Prop({ enum: YearEnum, required: true })
     year: number;
 
-    // ✅ تم تعديل هذا الحقل ليكون Array
-    @Prop({ type: [Number], required: true, enum: [1, 2] })
-    semester: number[];
+    @Prop({ required: true })
+    semester: string
 
     @Prop({ required: true })
     courseCode: string;
+
+    // @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
+    // parent: Course;
 
     @Prop({ default: false })
     isVotingOpen: boolean;
@@ -38,7 +40,7 @@ export class Course extends Document {
 
     @Prop()
     votingEnd?: Date;
-
+    
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Course' }], default: [] })
     prerequisites: Types.ObjectId[] | Course[];
 
@@ -48,5 +50,4 @@ export class Course extends Document {
     @Prop()
     updateAt: string
 }
-
 export const CourseSchema = SchemaFactory.createForClass(Course);

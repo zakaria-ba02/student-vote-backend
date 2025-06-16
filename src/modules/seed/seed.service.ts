@@ -49,7 +49,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " دانيا",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 1,
                     courseCode: "ENG100",
                     creditHours:3
                 },
@@ -58,7 +58,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC110",
                     creditHours:3
                 },
@@ -67,7 +67,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " بشير خراط",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "MTH105",
                     creditHours:3
                 },
@@ -76,7 +76,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبدالله طالب",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "PHS105",
                     creditHours:3
                 },
@@ -86,7 +86,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 1,
                     courseCode: "ITC100",
                     creditHours:3
                 },
@@ -96,7 +96,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " محمد زكريا",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 1,
                     courseCode: "ARB100",
                     creditHours:3
                 },
@@ -106,7 +106,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "دانيا ",
                     type: "NOT Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "ENG105",
                     creditHours:3,
                     prerequisites:["ENG100"]
@@ -117,7 +117,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " رائد سليمان",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "ACI100",
                     creditHours:3
                 },
@@ -127,7 +127,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " بشير خراط ",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "MTH100",
                     creditHours:3,
                     prerequisites:["MTH105"]
@@ -138,7 +138,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "  عبد الله طالب",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "PHS110",
                     creditHours:3,
                     prerequisites:["PHS105"]
@@ -149,7 +149,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " رياض مصطفى",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ELC120",
                     creditHours:3,
                     prerequisites:["PHS105"]
@@ -160,7 +160,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " اياد هلالي",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC115",
                     creditHours:3
                 },
@@ -169,7 +169,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "  دانيا",
                     type: "Not Mandatory",
                     year: YearEnum.SECOUND,
-                    semester:[1, 2],
+                    semester: 1,
                     courseCode: "ENG105",
                     creditHours:3,
                     prerequisites:["ENG100"]
@@ -180,7 +180,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "  بشير خراط",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "MTH115",
                     creditHours:3,
                     prerequisites:["MTH105"]
@@ -191,7 +191,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عارف نعمة",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ELC201",
                     creditHours:3,
                     prerequisites:["PHS105,ELC201"]
@@ -202,7 +202,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر ",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ELC207",
                     creditHours:3,
                     prerequisites:["PHS105"]
@@ -213,7 +213,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبدالمنعم عبدالله",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC203",
                     creditHours:3,
                     prerequisites:["PHS105"]
@@ -224,7 +224,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " اياد هلالي",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC209",
                     creditHours:3,
                     prerequisites:["ITC115"]
@@ -235,7 +235,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " بشير خراط",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "STA400",
                     creditHours:2
                 },
@@ -245,7 +245,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبد المنعم عبدالله",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC214",
                     creditHours:3
                 },
@@ -255,7 +255,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "بدر الدين قصاب",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ELC222",
                     creditHours:3,
                     prerequisites:["ELC201"]
@@ -267,7 +267,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC216",
                     creditHours:3,
                     prerequisites:["ELC201"]
@@ -278,7 +278,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " غفار الرفاعي",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC212",
                     creditHours:3,
                     prerequisites:["ITC203"]
@@ -289,7 +289,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "هنادي جاديبا",
                     type: "Mandatory",
                     year: YearEnum.SECOUND,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC218",
                     creditHours:3,
                     prerequisites:["ITC209"]
@@ -299,7 +299,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "محمد زكريا",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC301",
                     creditHours:3,
                     prerequisites:["ITC110"]
@@ -310,7 +310,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " بدر الدين قصاب",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ELC313",
                     creditHours:3,
                     prerequisites:["ELC222"]
@@ -321,7 +321,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبد الباسط حيدر",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester:[1],
+                    semester: 1,
                     courseCode: "ITC311",
                     creditHours:3,
                     prerequisites:["PHS105"],
@@ -331,7 +331,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبد القادر جوخدار",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC303",
                     creditHours:3,
                     prerequisites:["ITC115"]
@@ -342,7 +342,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "هنادي جاديبا",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC307",
                     creditHours:3,
                     prerequisites:["ITC209"]
@@ -353,7 +353,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "اياد هلالي",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC309",
                     creditHours:3,
                     prerequisites:["ITC209"]
@@ -364,7 +364,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " أيمن نعال",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC322",
                     creditHours:3
                 },
@@ -374,7 +374,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC316",
                     creditHours:3
                 },
@@ -384,7 +384,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد القادر جوخدار ",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode:"ELC324",
                     creditHours:3
                 },
@@ -394,7 +394,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC324",
                     creditHours:3,
                     prerequisites:["ELC313"]
@@ -406,7 +406,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "رزان فتال",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC318",
                     creditHours:3,
                     prerequisites:["ITC311"]
@@ -417,7 +417,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "محمد زكريا",
                     type: "Mandatory",
                     year: YearEnum.THIRD,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC326",
                     creditHours:3,
                     prerequisites:["ITC209"]
@@ -427,7 +427,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC407",
                     creditHours:3,
                     prerequisites:["ITC322"]
@@ -437,7 +437,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "يحيى فريد",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC411",
                     creditHours:3
                 },
@@ -446,7 +446,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "سامر خانجي",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "BUS500",
                     creditHours:2
                 },
@@ -455,7 +455,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "هنادي جاديبا",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC403",
                     creditHours:3
                 },
@@ -464,7 +464,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبد الباسط حيدر",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC409",
                     creditHours:3,
                     prerequisites:["ELC207"]
@@ -475,7 +475,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "رزان فتال",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC401",
                     creditHours:3,
                     prerequisites:["ITC318"]
@@ -486,7 +486,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "يحيى فريد",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC416",
                     creditHours:3,
                     prerequisites:["ITC411"]
@@ -497,7 +497,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC422",
                     creditHours:3
                 },
@@ -507,7 +507,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " رزان فتال ",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC414",
                     creditHours:3
                 },
@@ -517,7 +517,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " محمد شعار  ",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC412",
                     creditHours:3
                 },
@@ -527,7 +527,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "عبد القادر جوخدار",
                     type: "Mandatory",
                     year: YearEnum.FOURTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC418",
                     creditHours:3
                 },
@@ -537,7 +537,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " محمد زكريا ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1, 2],
+                    semester: 1,
                     courseCode: "BUS510",
                     creditHours:2
                 },
@@ -546,7 +546,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " اياد هلالي ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC511",
                     creditHours:3
                 },
@@ -557,7 +557,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " يحيى فري ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC509",
                     creditHours:3
                 },
@@ -567,7 +567,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC501",
                     creditHours:3
                 },
@@ -578,7 +578,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC515",
                     creditHours:3,
                     prerequisites:["ITC401"]
@@ -589,7 +589,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC501",
                     creditHours:3,
                     prerequisites:["ITC326"]
@@ -600,7 +600,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "اياد هلالي",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1],
+                    semester: 1,
                     courseCode: "ITC503",
                     creditHours:3,
                     prerequisites:["ITC309"]
@@ -611,7 +611,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " ايمن نعال ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC507",
                     creditHours:3,
                     prerequisites:["ITC407"]
@@ -622,7 +622,7 @@ export class SeedService implements OnModuleInit {
                     teacher: "فاطمة قداد ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC512",
                     creditHours:3
                 },
@@ -633,7 +633,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " اياد هلالي ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC514",
                     creditHours:3
                 },
@@ -643,7 +643,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " عبد الباسط حيدر ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC516",
                     creditHours:3,
                     prerequisites:["ITC501"]
@@ -655,7 +655,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " هنادي جاديبا ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC417",
                     creditHours:3,
                     prerequisites:["ITC403"]
@@ -666,7 +666,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " اياد هلالي ",
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC506",
                     creditHours:3
                 },
@@ -675,7 +675,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " يحيى فريد ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [2],
+                    semester: 2,
                     courseCode: "ITC518",
                     creditHours:3
                 },
@@ -686,17 +686,17 @@ export class SeedService implements OnModuleInit {
                     teacher: " محمد زكريا ",
                     type: "Mandatory",
                     year: YearEnum.FIFTH,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "ITC520",
                     creditHours:6
                 },
-
+//كيف ننحطا لكل السنين
                 {
                     name: " مجتمع وبيئة  ",
                     teacher: " محمد زكريا ",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "ITC520",
                     creditHours:3
                 },
@@ -706,7 +706,7 @@ export class SeedService implements OnModuleInit {
                     teacher: " محمد زكريا ",
                     type: "Mandatory",
                     year: YearEnum.FIRST,
-                    semester: [1, 2],
+                    semester: 2,
                     courseCode: "ITC520",
                     creditHours:3
                 },
