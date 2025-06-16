@@ -1,28 +1,31 @@
 import { IsArray, IsEnum, IsInt, IsOptional, IsString } from "class-validator"
-import { YearEnum } from "src/common/enums/year.enum"
-
+import { Type } from "class-transformer";
+import { YearEnum } from "src/common/enums/year.enum";
 
 export class CreateCourseDto {
     @IsString()
-    name: string
+    name: string;
 
     @IsString()
-    teacher: string
+    teacher: string;
 
     @IsString()
-    type: string
+    type: string;
 
     @IsEnum(YearEnum)
-    year: number
-    
-    @IsString()
-    semester: string
+    year: number;
+
+    // ✅ تعديل هنا
+    @IsArray()
+    @IsInt({ each: true })
+    @Type(() => Number) // لتحويل القيم القادمة من JSON إلى أرقام
+    semester: number[];
 
     @IsString()
-    courseCode: string
+    courseCode: string;
 
     @IsOptional()
     @IsArray()
+    @IsString({ each: true }) // نتحقق أن كل عنصر في المصفوفة هو string
     prerequisites?: string[];
-
 }
