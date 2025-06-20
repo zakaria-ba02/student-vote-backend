@@ -21,7 +21,7 @@ export class VoteController {
         return this.voteService.createVote(createVoteDto, studentId);
     }
 
-    
+    @Roles(Role.STUDENT)
     @Get("find-my-voted")
     async getMyVotedCourse(@GetStudentId() studentId: string) {
         return await this.voteService.getMyVotedCourse(studentId);
