@@ -28,7 +28,7 @@ export class StudentController {
         return await this.studentService.findAllStudent();
     }
 
-    @Roles(Role.EMP, Role.ADMIN)
+    @Roles(Role.EMP, Role.ADMIN,Role.STUDENT)
     @Get("get-ById/:id")
     async getStudentById(@Param("id") id: string) {
         const student = await this.studentService.findStudentById(id);

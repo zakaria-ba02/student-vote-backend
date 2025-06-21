@@ -130,25 +130,17 @@ export class CourseService {
         }
     }
 
- async getPrerequisites(courseCode: string): Promise<any[]> {
-    try {
-        const course = await this.courseModel.findOne({ courseCode }).exec();
-        if (!course) {
-            throw new NotFoundException(`Course with code ${courseCode} not found`);
+    async getPrerequisites(courseCode: string): Promise<Course[]> {
+        try {
+            const course = await this.courseModel.findOne({ courseCode })
+                .populate('prerequisites')
+                .exec();
+
+            if (!course) throw new NotFoundException(`Course with code ${courseCode} not found`);
+            return course?.prerequisites as Course[] || [];
+        } catch (error) {
+            throw new BadRequestException(`Failed to get prerequisites: ${error.message}`)
         }
-
-        // Fetch prerequisite course documents in parallel and wait for all of them
-        const prerequisites = await Promise.all(
-            ((course.prerequisites as string[]) || []).map((code: string) =>
-                this.courseModel.findOne({ courseCode: code }).exec()
-            )
-        );
-
-        return prerequisites.filter(p => p); // Remove any null values (if a course wasn't found)
-    } catch (error) {
-        throw new BadRequestException(`Failed to get prerequisites: ${error.message}`);
     }
-}
-
 
 }
