@@ -41,8 +41,8 @@ export class Course extends Document {
     @Prop()
     votingEnd?: Date;
     
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Course' }], default: [] })
-    prerequisites: Types.ObjectId[] | Course[];
+    @Prop({ type: [String], default: [] })
+    prerequisites: string[] | Course[];
 
     @Prop()
     createdAt: string
