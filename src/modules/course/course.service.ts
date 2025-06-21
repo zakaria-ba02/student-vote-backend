@@ -130,13 +130,15 @@ export class CourseService {
         }
     }
 
-    async getPrerequisites(courseCode: string): Promise<Course[]> {
+    async getPrerequisites(courseCode: string): Promise<any[]> {
         try {
             const course = await this.courseModel.findOne({ courseCode })
                 .populate('prerequisites')
                 .exec();
-
             if (!course) throw new NotFoundException(`Course with code ${courseCode} not found`);
+
+          const courses=  course?.prerequisites.map(async (e)=>await this.courseModel.find({courseCode:e}));
+          return courses;
             return course?.prerequisites as Course[] || [];
         } catch (error) {
             throw new BadRequestException(`Failed to get prerequisites: ${error.message}`)
