@@ -74,7 +74,7 @@ export class AuthService {
                 access_token: this.jwtService.sign({
                     name: student.name,
                     major: student.major,
-                    year: student.year,
+                    year: student.academicStatus,
                     role: Role.STUDENT,
                     universityId: student.universityId,
                     _id: student._id
