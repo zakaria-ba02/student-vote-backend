@@ -26,189 +26,105 @@ export class MarkService {
             throw new BadRequestException(`Error creating mark: ${error.message}`);
         }
     }
-    // async bulkImportMarks(createDtos: BulkImportMarkDto[]) {
-    //     try {
-    //         const results = [];
 
-    //         for (const createDto of createDtos) {
-    //             try {
-    //                 // Validate course exists
-    //                 const course = await this.courseModel.findById(createDto.courseId);
-    //                 if (!course) {
-    //                     results.push({
-    //                         studentId: createDto.studentId,
-    //                         courseId: createDto.courseId,
-    //                         success: false,
-    //                         message: "Course not found"
-    //                     });
-    //                     continue;
-    //                 }
-
-    //                 // Validate student exists
-    //                 const student = await this.studentModel.findById(createDto.studentId);
-    //                 if (!student) {
-    //                     results.push({
-    //                         studentId: createDto.studentId,
-    //                         courseId: createDto.courseId,
-    //                         success: false,
-    //                         message: "Student not found"
-    //                     });
-    //                     continue;
-    //                 }
-
-    //                 // Check if mark already exists for this student/course/type
-    //                 const existingMark = await this.markModel.findOne({
-    //                     studentId: createDto.studentId,
-    //                     courseId: createDto.courseId,
-    //                     type: createDto.type
-    //                 });
-
-    //                 if (existingMark) {
-    //                     results.push({
-    //                         studentId: createDto.studentId,
-    //                         courseId: createDto.courseId,
-    //                         success: false,
-    //                         message: "Mark already exists for this student/course/type combination"
-    //                     });
-    //                     continue;
-    //                 }
-
-    //                 // Create new mark
-    //                 const mark = await this.markModel.create(createDto);
-
-    //                 // Update student's completed hours and GPA if mark is passing
-    //                 if (createDto.mark >= 50) {
-    //                     student.completedHours += course.creditHours;
-    //                     student.academicStatus = academicHours(student.completedHours);
-    //                     student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
-    //                     await student.save();
-    //                 }
-
-    //                 results.push({
-    //                     studentId: createDto.studentId,
-    //                     courseId: createDto.courseId,
-    //                     success: true,
-    //                     markId: mark._id,
-    //                     updatedHours: student.completedHours,
-    //                     newGPA: student.cumulativeGPA
-    //                 });
-
-    //             } catch (error) {
-    //                 results.push({
-    //                     studentId: createDto.studentId,
-    //                     courseId: createDto.courseId,
-    //                     success: false,
-    //                     message: error.message
-    //                 });
-    //             }
-    //         }
-
-    //         return {
-    //             message: "Bulk import process completed",
-    //             results: results
-    //         };
-
-    //     } catch (error) {
-    //         throw new BadRequestException("Error in bulk import: " + error.message);
-    //     }
-    // }
     async bulkImportMarks(createDtos: BulkImportMarkDto[]) {
-    try {
-        const results = [];
+        try {
+            const results = [];
 
-        for (const createDto of createDtos) {
-            try {
-                // حول studentId و courseId إلى ObjectId
-                const studentObjectId = new Types.ObjectId(createDto.studentId);
-                const courseObjectId = new Types.ObjectId(createDto.courseId);
+            for (const createDto of createDtos) {
+                try {
+                    // حول studentId و courseId إلى ObjectId
+                    const studentObjectId = new Types.ObjectId(createDto.studentId);
+                    const courseObjectId = new Types.ObjectId(createDto.courseId);
 
-                // Validate course exists
-                const course = await this.courseModel.findById(courseObjectId);
-                if (!course) {
+                    // Validate course exists
+                    const course = await this.courseModel.findById(courseObjectId);
+                    if (!course) {
+                        results.push({
+                            studentId: createDto.studentId,
+                            courseId: createDto.courseId,
+                            success: false,
+                            message: "Course not found"
+                        });
+                        continue;
+                    }
+
+                    // Validate student exists
+                    const student = await this.studentModel.findById(studentObjectId);
+                    if (!student) {
+                        results.push({
+                            studentId: createDto.studentId,
+                            courseId: createDto.courseId,
+                            success: false,
+                            message: "Student not found"
+                        });
+                        continue;
+                    }
+
+                    // Check if mark already exists for this student/course/type
+                    const existingMark = await this.markModel.findOne({
+                        studentId: studentObjectId,
+                        courseId: courseObjectId,
+                        type: createDto.type
+                    });
+
+                    if (existingMark) {
+                        results.push({
+                            studentId: createDto.studentId,
+                            courseId: createDto.courseId,
+                            success: false,
+                            message: "Mark already exists for this student/course/type combination"
+                        });
+                        continue;
+                    }
+
+                    // Prepare data لإنشاء المارك مع ObjectId
+                    const markData = {
+                        ...createDto,
+                        studentId: studentObjectId,
+                        courseId: courseObjectId,
+                    };
+
+                    // Create new mark
+                    const mark = await this.markModel.create(markData);
+
+                    // Update student's completed hours and GPA if mark is passing
+                    if (createDto.mark >= 50) {
+                        student.completedHours += course.creditHours;
+                        student.academicStatus = academicHours(student.completedHours);
+                        student.year = academicHours(student.completedHours);
+                        student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
+                        await student.save();
+                    }
+
+                    results.push({
+                        studentId: createDto.studentId,
+                        courseId: createDto.courseId,
+                        success: true,
+                        markId: mark._id,
+                        updatedHours: student.completedHours,
+                        newGPA: student.cumulativeGPA
+                    });
+
+                } catch (error) {
                     results.push({
                         studentId: createDto.studentId,
                         courseId: createDto.courseId,
                         success: false,
-                        message: "Course not found"
+                        message: error.message
                     });
-                    continue;
                 }
-
-                // Validate student exists
-                const student = await this.studentModel.findById(studentObjectId);
-                if (!student) {
-                    results.push({
-                        studentId: createDto.studentId,
-                        courseId: createDto.courseId,
-                        success: false,
-                        message: "Student not found"
-                    });
-                    continue;
-                }
-
-                // Check if mark already exists for this student/course/type
-                const existingMark = await this.markModel.findOne({
-                    studentId: studentObjectId,
-                    courseId: courseObjectId,
-                    type: createDto.type
-                });
-
-                if (existingMark) {
-                    results.push({
-                        studentId: createDto.studentId,
-                        courseId: createDto.courseId,
-                        success: false,
-                        message: "Mark already exists for this student/course/type combination"
-                    });
-                    continue;
-                }
-
-                // Prepare data لإنشاء المارك مع ObjectId
-                const markData = {
-                    ...createDto,
-                    studentId: studentObjectId,
-                    courseId: courseObjectId,
-                };
-
-                // Create new mark
-                const mark = await this.markModel.create(markData);
-
-                // Update student's completed hours and GPA if mark is passing
-                if (createDto.mark >= 50) {
-                    student.completedHours += course.creditHours;
-                    student.academicStatus = academicHours(student.completedHours);
-                    student.cumulativeGPA = (await this.studentService.calculateCumulativeGPA(createDto.studentId)).gpa;
-                    await student.save();
-                }
-
-                results.push({
-                    studentId: createDto.studentId,
-                    courseId: createDto.courseId,
-                    success: true,
-                    markId: mark._id,
-                    updatedHours: student.completedHours,
-                    newGPA: student.cumulativeGPA
-                });
-
-            } catch (error) {
-                results.push({
-                    studentId: createDto.studentId,
-                    courseId: createDto.courseId,
-                    success: false,
-                    message: error.message
-                });
             }
+
+            return {
+                message: "Bulk import process completed",
+                results: results
+            };
+
+        } catch (error) {
+            throw new BadRequestException("Error in bulk import: " + error.message);
         }
-
-        return {
-            message: "Bulk import process completed",
-            results: results
-        };
-
-    } catch (error) {
-        throw new BadRequestException("Error in bulk import: " + error.message);
     }
-}
 
     async getAllMark() {
         try {
@@ -220,73 +136,73 @@ export class MarkService {
         }
     }
 
-//     async getAllMark() {
-//   try {
+    //     async getAllMark() {
+    //   try {
 
-//     const marks = await this.markModel
-//       .find({})
-//       .populate({
-//         path: "studentId",
-//         select: "name",
-//       })
-//       .populate({
-//         path: "courseId",
-//         select: "name courseCode",
-//       })
-//       .exec();
-
-
-//     const courseMarkMap = new Map<string, {
-//       courseId: string;
-//       courseName: string;
-//       courseCode: string;
-//       marks: Array<{
-//         studentId: string;
-//         studentName: string;
-//         mark: number;
-
-//       }>;
-//     }>();
-
-//     for (const mark of marks) {
-//       const course = mark.courseId as any;
-//       const student = mark.studentId as any;
-
-//       if (!course || !student) continue;
-
-//       const courseId = course._id.toString();
-//       const existing = courseMarkMap.get(courseId);
-
-//       if (!existing) {
-//         courseMarkMap.set(courseId, {
-//           courseId,
-//           courseName: course.name,
-//           courseCode: course.courseCode,
-//           marks: [
-//             {
-//               studentId: student._id.toString(),
-//               studentName: student.name,
-//               mark: mark.mark,
-//             },
-//           ],
-//         });
-//       } else {
-//         existing.marks.push({
-//           studentId: student._id.toString(),
-//           studentName: student.name,
-//           mark: mark.mark,
-//         });
-//       }
-//     }
+    //     const marks = await this.markModel
+    //       .find({})
+    //       .populate({
+    //         path: "studentId",
+    //         select: "name",
+    //       })
+    //       .populate({
+    //         path: "courseId",
+    //         select: "name courseCode",
+    //       })
+    //       .exec();
 
 
-//     const result = Array.from(courseMarkMap.values());
+    //     const courseMarkMap = new Map<string, {
+    //       courseId: string;
+    //       courseName: string;
+    //       courseCode: string;
+    //       marks: Array<{
+    //         studentId: string;
+    //         studentName: string;
+    //         mark: number;
 
-//     return result;
-//   } catch (error) {
-//     throw new BadRequestException(`Failed to fetch marks: ${error.message}`);
-//   }
-// }
+    //       }>;
+    //     }>();
+
+    //     for (const mark of marks) {
+    //       const course = mark.courseId as any;
+    //       const student = mark.studentId as any;
+
+    //       if (!course || !student) continue;
+
+    //       const courseId = course._id.toString();
+    //       const existing = courseMarkMap.get(courseId);
+
+    //       if (!existing) {
+    //         courseMarkMap.set(courseId, {
+    //           courseId,
+    //           courseName: course.name,
+    //           courseCode: course.courseCode,
+    //           marks: [
+    //             {
+    //               studentId: student._id.toString(),
+    //               studentName: student.name,
+    //               mark: mark.mark,
+    //             },
+    //           ],
+    //         });
+    //       } else {
+    //         existing.marks.push({
+    //           studentId: student._id.toString(),
+    //           studentName: student.name,
+    //           mark: mark.mark,
+    //         });
+    //       }
+    //     }
+
+
+    //     const result = Array.from(courseMarkMap.values());
+
+    //     return result;
+    //   } catch (error) {
+    //     throw new BadRequestException(`Failed to fetch marks: ${error.message}`);
+    //   }
+    // }
 
 
     async getMarkById(id: string) {
@@ -300,28 +216,12 @@ export class MarkService {
     }
 
 
-    // async getMarkByStudentId(studentId: string) {
-    //     try {
-    //         const mark = await this.markModel.find({
-    //             studentId: studentId
-    //         }).populate("courseId").exec() as any;
 
-    //         return {
-    //             ...mark,
-    //             course:(mark.courseId),
-    //             courseId:(mark.courseId._id.toString())
-    //         };
-    //     } catch (error) {
-    //         console.error('Error in getMarkByStudentId:', error);
-    //         throw new BadRequestException(`No mark found for student ID: ${studentId}. Error: ${error.message}`);
-    //     }
-    // }
-    
     async getMarkByStudentId(studentId: string) {
         try {
             const marks = await this.markModel
                 .find({ studentId })
-                .populate('courseId') 
+                .populate('courseId')
                 .exec();
 
             if (!marks || marks.length === 0) {
@@ -330,7 +230,7 @@ export class MarkService {
 
             return marks.map(mark => ({
                 ...mark.toObject(),
-                course: mark.courseId, 
+                course: mark.courseId,
                 courseId: mark.courseId._id.toString(),
             }));
         } catch (error) {
