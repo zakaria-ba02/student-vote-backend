@@ -136,75 +136,6 @@ export class MarkService {
         }
     }
 
-    //     async getAllMark() {
-    //   try {
-
-    //     const marks = await this.markModel
-    //       .find({})
-    //       .populate({
-    //         path: "studentId",
-    //         select: "name",
-    //       })
-    //       .populate({
-    //         path: "courseId",
-    //         select: "name courseCode",
-    //       })
-    //       .exec();
-
-
-    //     const courseMarkMap = new Map<string, {
-    //       courseId: string;
-    //       courseName: string;
-    //       courseCode: string;
-    //       marks: Array<{
-    //         studentId: string;
-    //         studentName: string;
-    //         mark: number;
-
-    //       }>;
-    //     }>();
-
-    //     for (const mark of marks) {
-    //       const course = mark.courseId as any;
-    //       const student = mark.studentId as any;
-
-    //       if (!course || !student) continue;
-
-    //       const courseId = course._id.toString();
-    //       const existing = courseMarkMap.get(courseId);
-
-    //       if (!existing) {
-    //         courseMarkMap.set(courseId, {
-    //           courseId,
-    //           courseName: course.name,
-    //           courseCode: course.courseCode,
-    //           marks: [
-    //             {
-    //               studentId: student._id.toString(),
-    //               studentName: student.name,
-    //               mark: mark.mark,
-    //             },
-    //           ],
-    //         });
-    //       } else {
-    //         existing.marks.push({
-    //           studentId: student._id.toString(),
-    //           studentName: student.name,
-    //           mark: mark.mark,
-    //         });
-    //       }
-    //     }
-
-
-    //     const result = Array.from(courseMarkMap.values());
-
-    //     return result;
-    //   } catch (error) {
-    //     throw new BadRequestException(`Failed to fetch marks: ${error.message}`);
-    //   }
-    // }
-
-
     async getMarkById(id: string) {
         try {
             const mark = await this.markModel.findById({ id: id })
@@ -214,8 +145,25 @@ export class MarkService {
             throw new BadRequestException(`No mark found with ID: ${id}. Error: ${error.message}`);
         }
     }
+    async getMarksByCourse(courseId: string) {
+        if (!courseId) {
+            throw new BadRequestException('Course ID is required');
+        }
+
+        const marks = await this.markModel.find({ courseId })
+            .populate('studentId', 'name') // Populate only student name
+            .select('studentId mark') // Select only studentId and mark
+            .exec();
 
 
+        return marks.map(entry => {
+            const student = entry.studentId as unknown as Student;
+            return {
+                name: student.name,
+                mark: entry.mark,
+            };
+        });
+    }
 
     async getMarkByStudentId(studentId: string) {
         try {

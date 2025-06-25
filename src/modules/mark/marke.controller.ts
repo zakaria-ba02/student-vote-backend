@@ -10,14 +10,14 @@ import { BulkImportMarkDto } from "./dto/bulk-import-mark.dto";
 
 
 @Controller("mark")
-@UseGuards(JwtAuthGuard, RolesGuard)
+//@UseGuards(JwtAuthGuard, RolesGuard)
 export class MarkController {
     constructor(
         private readonly markService: MarkService
     ) { }
 
 
-    @Roles(Role.EMP,Role.ADMIN)
+    @Roles(Role.EMP, Role.ADMIN)
     @Post('bulk-import')
     async bulkImport(@Body() bulkImportDto: BulkImportMarkDto[]) {
         return this.markService.bulkImportMarks(bulkImportDto);
@@ -40,6 +40,11 @@ export class MarkController {
     @Get('find-by-id/:id')
     async getMarkById(@Param('id') id: string) {
         return await this.markService.getMarkById(id);
+    }
+
+    @Get('by-course/:courseId')
+    async getMarksByCourse(@Param('courseId') courseId: string) {
+        return this.markService.getMarksByCourse(courseId);
     }
 
     @Patch('update/:id')
