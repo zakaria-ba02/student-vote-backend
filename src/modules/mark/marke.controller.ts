@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { GetStudentId } from "src/common/decoraters";
 import { Roles } from "src/common/decoraters/roles";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
@@ -10,7 +10,7 @@ import { BulkImportMarkDto } from "./dto/bulk-import-mark.dto";
 
 
 @Controller("mark")
-@UseGuards(JwtAuthGuard, RolesGuard)
+//@UseGuards(JwtAuthGuard, RolesGuard)
 export class MarkController {
     constructor(
         private readonly markService: MarkService
@@ -59,8 +59,10 @@ export class MarkController {
         return await this.markService.deleteMark(id);
     }
 
-    @Get('by-course/:courseId')
-    async getMarksByCourse(@Param('courseId') courseId: string) {
-        return this.markService.getMarksByCourse(courseId);
-    }
+   @Get('by-courses')
+  async getMarksByCourses(@Query('courseIds') courseIdsQuery: string) {
+    const courseIds = courseIdsQuery.split(',');
+    const result = await this.markService.getMarksByCourses(courseIds);
+    return result;
+  }
 }
