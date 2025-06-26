@@ -145,25 +145,6 @@ export class MarkService {
             throw new BadRequestException(`No mark found with ID: ${id}. Error: ${error.message}`);
         }
     }
-    async getMarksByCourse(courseId: string) {
-        if (!courseId) {
-            throw new BadRequestException('Course ID is required');
-        }
-
-        const marks = await this.markModel.find({ courseId })
-            .populate('studentId', 'name') // Populate only student name
-            .select('studentId mark') // Select only studentId and mark
-            .exec();
-
-
-        return marks.map(entry => {
-            const student = entry.studentId as unknown as Student;
-            return {
-                name: student.name,
-                mark: entry.mark,
-            };
-        });
-    }
 
     async getMarkByStudentId(studentId: string) {
         try {
@@ -221,5 +202,25 @@ export class MarkService {
             console.error('Error in deleteMark:', error);
             throw new BadRequestException(`Failed to delete mark with ID: ${id}. Error: ${error.message}`);
         }
+    }
+
+    async getMarksByCourse(courseId: string) {
+        if (!courseId) {
+            throw new BadRequestException('Course ID is required');
+        }
+
+        const marks = await this.markModel.find({ courseId })
+            .populate('studentId', 'name') // Populate only student name
+            .select('studentId mark') // Select only studentId and mark
+            .exec();
+
+
+        return marks.map(entry => {
+            const student = entry.studentId as unknown as Student;
+            return {
+                name: student.name,
+                mark: entry.mark,
+            };
+        });
     }
 }

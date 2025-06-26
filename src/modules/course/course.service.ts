@@ -11,7 +11,7 @@ import { Mark } from "../mark/schema/mark.schema";
 export class CourseService {
     constructor(
         @InjectModel(Course.name) private readonly courseModel: Model<Course>,
-        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,
+       
 
         
     ) { }
