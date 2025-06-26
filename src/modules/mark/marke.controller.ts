@@ -10,7 +10,7 @@ import { BulkImportMarkDto } from "./dto/bulk-import-mark.dto";
 
 
 @Controller("mark")
-//@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MarkController {
     constructor(
         private readonly markService: MarkService

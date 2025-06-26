@@ -143,4 +143,28 @@ export class CourseService {
         }
     }
 
+    // async getAvaiableOpenCourseForStudent(year: YearEnum) {
+    //     const courses = await this.courseModel.find({
+    //         year: { $lte: year },
+    //         isOpen: true
+    //     }).exec();
+    //     const courseIds = courses.map(c => c._id);
+
+    //     const marks = await this.markModel.find({
+    //         courseId: { $in: courseIds },
+    //     }).exec()
+    //     //جلب المواد الراسبة او التي لم يجتازها
+    //     const failedOrEmptyCourseIds = courseIds.filter((c) => {
+    //         const mark = marks.find((m) => m.mark < 50 && m.courseId == c.toString());
+    //         if (mark) {
+    //             return true;
+    //         }
+    //         return !marks.find(m => m.courseId == c);
+    //     });
+    //     const avaibleCourses = await this.courseModel.find({
+    //         _id: { $in: failedOrEmptyCourseIds }
+    //     }).exec();
+    //     return avaibleCourses;
+    // }
+
 }

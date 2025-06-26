@@ -45,10 +45,6 @@ export class CourseController {
     return this.courseService.getPrerequisites(code);
   }
 
-  //   @Get("avaible-course")
-  // async avaibleCourse(@GetStudentYear() year: YearEnum) {
-  //      return await this.courseService.getAvaiableOpenCourseForStudent(year);
-  //   }
 
   @Get('open-course/:year')
   async getAllOpenCourse(@Param("year") year: YearEnum) {
@@ -91,5 +87,10 @@ export class CourseController {
     return availableCourses;
   }
 
-  
+  // @Get("avaible-course")
+  // async avaibleCourse(@GetStudentYear() year: YearEnum) {
+  //   return await this.courseService.getAvaiableOpenCourseForStudent(year);
+  // }
+
+
 }
