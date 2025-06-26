@@ -26,9 +26,6 @@ export class Course extends Document {
     @Prop({ required: true })
     courseCode: string;
 
-    // @Prop({ type: Types.ObjectId, ref: 'Course', default: null })
-    // parent: Course;
-
     @Prop({ default: false })
     isVotingOpen: boolean;
 

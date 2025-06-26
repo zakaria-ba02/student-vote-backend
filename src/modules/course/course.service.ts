@@ -5,11 +5,14 @@ import { YearEnum } from "src/common/enums/year.enum";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
 import { Course } from "./schema/course.schema";
+import { Mark } from "../mark/schema/mark.schema";
 
 @Injectable()
 export class CourseService {
     constructor(
         @InjectModel(Course.name) private readonly courseModel: Model<Course>,
+        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,
+
         
     ) { }
 
