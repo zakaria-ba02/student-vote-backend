@@ -182,6 +182,36 @@ export class MarkService {
         return { message: " updated Mark successfully" }
     }
 
+    //      async getMarksByCourses(courseIds: string[]) {
+    //     if (!courseIds || courseIds.length === 0) {
+    //       throw new BadRequestException('At least one courseId must be provided');
+    //     }
+
+
+    //     const marks = await this.markModel
+    //       .find({ courseId: { $in: courseIds } })
+    //       .populate('studentId', 'name')
+    //       .select('courseId studentId mark') 
+    //       .exec();
+
+    //     const result = courseIds.map(courseId => {
+    //       return {
+    //         courseId,
+    //         marks: marks
+    //           .filter(mark => mark.courseId.toString() === courseId)
+    //           .map(entry => {
+    //             const student = entry.studentId as unknown as Student;
+    //             return {
+    //               studentName: student.name,
+    //               mark: entry.mark,
+    //             };
+    //           }),
+    //       };
+    //     });
+
+    //     return result;
+    //   }
+
     async deleteMark(id: string) {
         try {
             if (!id) {
@@ -204,33 +234,5 @@ export class MarkService {
         }
     }
 
-//      async getMarksByCourses(courseIds: string[]) {
-//     if (!courseIds || courseIds.length === 0) {
-//       throw new BadRequestException('At least one courseId must be provided');
-//     }
 
-//     // جلب كل العلامات التي تخص أي من المواد في courseIds
-//     const marks = await this.markModel
-//       .find({ courseId: { $in: courseIds } })
-//       .populate('studentId', 'name')
-//       .select('courseId studentId mark') 
-//       .exec();
-
-//     const result = courseIds.map(courseId => {
-//       return {
-//         courseId,
-//         marks: marks
-//           .filter(mark => mark.courseId.toString() === courseId)
-//           .map(entry => {
-//             const student = entry.studentId as unknown as Student;
-//             return {
-//               studentName: student.name,
-//               mark: entry.mark,
-//             };
-//           }),
-//       };
-//     });
-
-//     return result;
-//   }
 }

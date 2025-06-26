@@ -41,7 +41,12 @@ export class MarkController {
     async getMarkById(@Param('id') id: string) {
         return await this.markService.getMarkById(id);
     }
-
+    //    @Get('by-courses')
+    //   async getMarksByCourses(@Query('courseIds') courseIdsQuery: string) {
+    //     const courseIds = courseIdsQuery.split(',');
+    //     const result = await this.markService.getMarksByCourses(courseIds);
+    //     return result;
+    //   }
 
     @Patch('update/:id')
     @Roles(Role.EMP)
@@ -59,10 +64,5 @@ export class MarkController {
         return await this.markService.deleteMark(id);
     }
 
-//    @Get('by-courses')
-//   async getMarksByCourses(@Query('courseIds') courseIdsQuery: string) {
-//     const courseIds = courseIdsQuery.split(',');
-//     const result = await this.markService.getMarksByCourses(courseIds);
-//     return result;
-//   }
+
 }
