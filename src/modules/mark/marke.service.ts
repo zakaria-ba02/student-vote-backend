@@ -182,35 +182,7 @@ export class MarkService {
         return { message: " updated Mark successfully" }
     }
 
-    //      async getMarksByCourses(courseIds: string[]) {
-    //     if (!courseIds || courseIds.length === 0) {
-    //       throw new BadRequestException('At least one courseId must be provided');
-    //     }
 
-
-    //     const marks = await this.markModel
-    //       .find({ courseId: { $in: courseIds } })
-    //       .populate('studentId', 'name')
-    //       .select('courseId studentId mark') 
-    //       .exec();
-
-    //     const result = courseIds.map(courseId => {
-    //       return {
-    //         courseId,
-    //         marks: marks
-    //           .filter(mark => mark.courseId.toString() === courseId)
-    //           .map(entry => {
-    //             const student = entry.studentId as unknown as Student;
-    //             return {
-    //               studentName: student.name,
-    //               mark: entry.mark,
-    //             };
-    //           }),
-    //       };
-    //     });
-
-    //     return result;
-    //   }
 
     async deleteMark(id: string) {
         try {
@@ -233,6 +205,34 @@ export class MarkService {
             throw new BadRequestException(`Failed to delete mark with ID: ${id}. Error: ${error.message}`);
         }
     }
+    async getMarksByCourses(courseIds: string[]) {
+        if (!courseIds || courseIds.length === 0) {
+            throw new BadRequestException('At least one courseId must be provided');
+        }
 
+
+        const marks = await this.markModel
+            .find({ courseId: { $in: courseIds } })
+            .populate('studentId', 'name')
+            .select('courseId studentId mark')
+            .exec();
+
+        const result = courseIds.map(courseId => {
+            return {
+                courseId,
+                marks: marks
+                    .filter(mark => mark.courseId.toString() === courseId)
+                    .map(entry => {
+                        const student = entry.studentId as unknown as Student;
+                        return {
+                            studentName: student.name,
+                            mark: entry.mark,
+                        };
+                    }),
+            };
+        });
+
+        return result;
+    }
 
 }
