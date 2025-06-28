@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { YearEnum } from "src/common/enums/year.enum";
 import { CreateCourseDto } from "./dto/create.dto";
 import { UpdateCourseDto } from "./dto/update.dto";
@@ -10,10 +10,8 @@ import { Mark } from "../mark/schema/mark.schema";
 @Injectable()
 export class CourseService {
     constructor(
-        @InjectModel(Course.name) private readonly courseModel: Model<Course>,
-       
-
-        
+        @InjectModel(Course.name) private readonly courseModel: Model<Course>,        
+        @InjectModel(Mark.name) private readonly markModel: Model<Mark>,        
     ) { }
 
     async createCourse(createDto: CreateCourseDto) {
@@ -50,7 +48,11 @@ export class CourseService {
 
     async getAllOpenCourse(year: YearEnum) {
         try {
-            const courses = await this.courseModel.find({ isOpen: true, year }).exec();
+            let validYear= year;
+            if(year>=5){
+                validYear=5;
+            } 
+            const courses = await this.courseModel.find({ isOpen: true, year:validYear }).exec();
     
             if (!courses || courses.length === 0) {
                 throw new BadRequestException(`No open courses found for year ${year}`);
@@ -146,28 +148,29 @@ export class CourseService {
         }
     }
 
-    // async getAvaiableOpenCourseForStudent(year: YearEnum) {
-    //     const courses = await this.courseModel.find({
-    //         year: { $lte: year },
-    //         isOpen: true
-    //     }).exec();
-    //     const courseIds = courses.map(c => c._id);
+    async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
+        const courses = await this.courseModel.find({
+            year: { $lte: year },
+            isOpen: true
+        }).exec();
+        const courseIds = courses.map(c => c._id);
 
-    //     const marks = await this.markModel.find({
-    //         courseId: { $in: courseIds },
-    //     }).exec()
-    //     //جلب المواد الراسبة او التي لم يجتازها
-    //     const failedOrEmptyCourseIds = courseIds.filter((c) => {
-    //         const mark = marks.find((m) => m.mark < 50 && m.courseId == c.toString());
-    //         if (mark) {
-    //             return true;
-    //         }
-    //         return !marks.find(m => m.courseId == c);
-    //     });
-    //     const avaibleCourses = await this.courseModel.find({
-    //         _id: { $in: failedOrEmptyCourseIds }
-    //     }).exec();
-    //     return avaibleCourses;
-    // }
+        const marks = await this.markModel.find({
+            courseId: { $in: courseIds },
+            studentId:new Types.ObjectId(studentId)
+        }).exec()
+        //جلب المواد الراسبة او التي لم يجتازها
+        const failedOrEmptyCourseIds = courseIds.filter((c) => {
+            const mark = marks.find((m) => m.mark < 50 && m.courseId.toString() == c.toString());
+            if (mark) {
+                return true;
+            }
+            return !marks.find(m => m.courseId == c);
+        });
+        const avaibleCourses = await this.courseModel.find({
+            _id: { $in: failedOrEmptyCourseIds }
+        }).exec();
+        return avaibleCourses;
+    }
 
 }

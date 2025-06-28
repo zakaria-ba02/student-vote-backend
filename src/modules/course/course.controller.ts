@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards } from "@nestjs/common";
-import { GetStudentYear } from "src/common/decoraters";
+import { GetStudentId, GetStudentYear } from "src/common/decoraters";
 import { YearEnum } from "src/common/enums/year.enum";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { CourseService } from "./course.service";
@@ -66,25 +66,9 @@ export class CourseController {
   }
 
 
-  @Get('available/:studentId')
-  async getAvailableCourses(@Param('studentId') studentId: string) {
-    const student = await this.studentModel.findById(studentId);
-    if (!student) throw new NotFoundException('الطالب غير موجود');
-
-    const allCourses = await this.courseModel.find({ isOpen: true }).exec();
-
-    const availableCourses = [];
-    for (const course of allCourses) {
-      const isAvailable = await this.prerService.checkCourseIsAvailable(
-        course.courseCode,
-        studentId
-      );
-      if (isAvailable) {
-        availableCourses.push(course);
-      }
-    }
-
-    return availableCourses;
+  @Get('available')
+  async getAvailableCourses(@GetStudentId() studentId:string,@GetStudentYear() year:YearEnum) {
+    return await this.courseService.getAvaiableOpenCourseForStudent(year,studentId);
   }
 
   // @Get("avaible-course")
