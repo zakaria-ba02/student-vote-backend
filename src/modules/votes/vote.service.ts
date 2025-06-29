@@ -19,8 +19,8 @@ export class VoteService {
         try {
             const courseIds = createDto.courseIds;
 
-            if (!Array.isArray(courseIds) || courseIds.length < 4 || courseIds.length > 6) {
-                throw new BadRequestException("You must vote for at least 4 and at most 6 courses.");
+            if (!Array.isArray(courseIds) || courseIds.length < 1 || courseIds.length > 7) {
+                throw new BadRequestException("You must vote for at least 1 and at most 7 courses.");
             }
 
             // Fetch all relevant courses
@@ -36,16 +36,20 @@ export class VoteService {
             }
 
             const now = new Date();
+            now.setDate(now.getDate() + 1);
             for (const course of courses) {
+                
                 if (!course.votingStart || !course.votingEnd || now < course.votingStart || now > course.votingEnd) {
                     throw new BadRequestException(`Voting is not currently open for course ${course._id}`);
                 }
 
                 const existingVote = await this.voteModel.findOne({
                     studentId: studentId,
-                    courseId: course._id,
-                    createdAt: { $gte: course.votingStart, $lte: course.votingEnd }
+                    courseId: course._id.toString(),
+                    createdAt: { $gte: course.votingStart.setDate(course.votingStart.getDate()-1), $lte: course.votingEnd }
                 });
+                console.log("THIS IS AN EXISTING VOTES",existingVote);
+                
                 const mark = await this.markModel.findOne({ studentId, courseId: course._id.toString() })
                 if (mark && mark.mark >= 50) {
                     throw new ConflictException(`Already passed for this course ${course._id}`);
@@ -71,84 +75,84 @@ export class VoteService {
     }
 
     async getAllVote() {
-    try {
-      // Fetch all votes with populated course and student data
-      const votes = await this.voteModel
-        .find({})
-        .populate({
-          path: "courseId",
-          select: "name courseCode",
-        })
-        .populate({
-          path: "studentId",
-          select: "name universityId completedHours",
-        })
-        .exec();
+        try {
+            // Fetch all votes with populated course and student data
+            const votes = await this.voteModel
+                .find({})
+                .populate({
+                    path: "courseId",
+                    select: "name courseCode",
+                })
+                .populate({
+                    path: "studentId",
+                    select: "name universityId completedHours",
+                })
+                .exec();
 
-      // Group votes by courseId manually
-      const courseVoteMap = new Map<string, {
-        courseId: string;
-        courseName: string;
-        courseCode: string;
-        voteCount: number;
-        voters: Array<{
-          studentId: string;
-          name: string;
-          universityId: number;
-          isGraduating: boolean;
-        }>;
-      }>();
+            // Group votes by courseId manually
+            const courseVoteMap = new Map<string, {
+                courseId: string;
+                courseName: string;
+                courseCode: string;
+                voteCount: number;
+                voters: Array<{
+                    studentId: string;
+                    name: string;
+                    universityId: number;
+                    isGraduating: boolean;
+                }>;
+            }>();
 
-      for (const vote of votes) {
-        const course = vote.courseId as any; // Type assertion since populated
-        const student = vote.studentId as any; // Type assertion since populated
+            for (const vote of votes) {
+                const course = vote.courseId as any; // Type assertion since populated
+                const student = vote.studentId as any; // Type assertion since populated
 
-        if (!course || !student) continue; // Skip if population failed
+                if (!course || !student) continue; // Skip if population failed
 
-        const courseId = (vote as any).courseId._id.toString();
-        const existing = courseVoteMap.get(courseId);
+                const courseId = (vote as any).courseId._id.toString();
+                const existing = courseVoteMap.get(courseId);
 
-        if (!existing) {
-          courseVoteMap.set(courseId, {
-            courseId,
-            courseName: course.name,
-            courseCode: course.courseCode,
-            voteCount: 1,
-            voters: [
-              {
-                studentId: student._id.toString(),
-                name: student.name,
-                universityId: student.universityId,
-                isGraduating: student.completedHours >= 150,
-              },
-            ],
-          });
-        } else {
-          existing.voteCount += 1;
-          existing.voters.push({
-            studentId: student._id.toString(),
-            name: student.name,
-            universityId: student.universityId,
-            isGraduating: student.completedHours >= 150,
-          });
+                if (!existing) {
+                    courseVoteMap.set(courseId, {
+                        courseId,
+                        courseName: course.name,
+                        courseCode: course.courseCode,
+                        voteCount: 1,
+                        voters: [
+                            {
+                                studentId: student._id.toString(),
+                                name: student.name,
+                                universityId: student.universityId,
+                                isGraduating: student.completedHours >= 150,
+                            },
+                        ],
+                    });
+                } else {
+                    existing.voteCount += 1;
+                    existing.voters.push({
+                        studentId: student._id.toString(),
+                        name: student.name,
+                        universityId: student.universityId,
+                        isGraduating: student.completedHours >= 150,
+                    });
+                }
+            }
+
+            // Convert map to array and calculate graduatingVotersCount
+            const result = Array.from(courseVoteMap.values()).map(course => ({
+                courseId: course.courseId,
+                courseName: course.courseName,
+                courseCode: course.courseCode,
+                voteCount: course.voteCount,
+                graduatingVotersCount: course.voters.filter(voter => voter.isGraduating).length,
+                voters: course.voters,
+            }));
+
+            return result;
+        } catch (error) {
+            throw new NotFoundException(`Votes not found: ${error.message}`);
         }
-      }
-
-      // Convert map to array and calculate graduatingVotersCount
-      const result = Array.from(courseVoteMap.values()).map(course => ({
-        courseId: course.courseId,
-        courseName: course.courseName,
-        courseCode: course.courseCode,
-        voteCount: course.voteCount,
-        graduatingVotersCount: course.voters.filter(voter => voter.isGraduating).length,
-        voters: course.voters,
-      }));
-
-      return result;
-    } catch (error) {
-      throw new NotFoundException(`Votes not found: ${error.message}`);
     }
-  }
 
     //جلب الاصوات على مادة معينة
     async getAllVotedCourse(courseId: string, startDate: Date, endDate: Date) {

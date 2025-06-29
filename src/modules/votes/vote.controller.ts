@@ -18,7 +18,7 @@ export class VoteController {
     @Roles(Role.STUDENT)    
     @Post("create-vote")
     async createVote(@Body() createVoteDto: CreatVoteDto, @GetStudentId() studentId: string) {
-        return this.voteService.createVote(createVoteDto, studentId);
+        return await this.voteService.createVote(createVoteDto, studentId);
     }
 
     @Roles(Role.STUDENT)

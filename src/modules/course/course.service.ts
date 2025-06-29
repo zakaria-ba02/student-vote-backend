@@ -165,7 +165,7 @@ export class CourseService {
             if (mark) {
                 return true;
             }
-            return !marks.find(m => m.courseId == c);
+            return !marks.find(m => m.courseId.toString() == c.toString());
         });
         const avaibleCourses = await this.courseModel.find({
             _id: { $in: failedOrEmptyCourseIds }

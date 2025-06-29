@@ -590,7 +590,7 @@ export class SeedService implements OnModuleInit {
                     type: "Not Mandatory",
                     year: YearEnum.FIFTH,
                     semester: 1,
-                    courseCode: "ITC501",
+                    courseCode: "ITC513",
                     creditHours:3,
                     prerequisites:["ITC326"]
                 },

@@ -71,10 +71,10 @@ export class CourseController {
     return await this.courseService.getAvaiableOpenCourseForStudent(year,studentId);
   }
 
-  // @Get("avaible-course")
-  // async avaibleCourse(@GetStudentYear() year: YearEnum) {
-  //   return await this.courseService.getAvaiableOpenCourseForStudent(year);
-  // }
+  @Get("avaible-course")
+  async avaibleCourse(@GetStudentYear() year: YearEnum) {
+    // return await this.courseService.getAvaiableOpenCourseForStudent(year);
+  }
 
 
 }
