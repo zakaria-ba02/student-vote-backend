@@ -148,29 +148,39 @@ export class CourseService {
         }
     }
 
-    async getAvaiableOpenCourseForStudent(year: YearEnum,studentId:string) {
-        const courses = await this.courseModel.find({
-            year: { $lte: year },
-            isOpen: true
-        }).exec();
-        const courseIds = courses.map(c => c._id);
+    async getAvaiableOpenCourseForStudent(year: YearEnum, studentId: string) {
+  try {
+    const courses = await this.courseModel.find({
+      year: { $lte: year },
+      isOpen: true,
+    }).exec();
 
-        const marks = await this.markModel.find({
-            courseId: { $in: courseIds },
-            studentId:new Types.ObjectId(studentId)
-        }).exec()
-        //جلب المواد الراسبة او التي لم يجتازها
-        const failedOrEmptyCourseIds = courseIds.filter((c) => {
-            const mark = marks.find((m) => m.mark < 50 && m.courseId.toString() == c.toString());
-            if (mark) {
-                return true;
-            }
-            return !marks.find(m => m.courseId.toString() == c.toString());
-        });
-        const avaibleCourses = await this.courseModel.find({
-            _id: { $in: failedOrEmptyCourseIds }
-        }).exec();
-        return avaibleCourses;
-    }
+    const courseIds = courses.map(c => c._id);
+
+    const marks = await this.markModel.find({
+      courseId: { $in: courseIds },
+      studentId: new Types.ObjectId(studentId),
+    }).exec();
+
+    // جلب المواد الراسبة أو التي لم يجتزها
+    const failedOrEmptyCourseIds = courseIds.filter((c) => {
+      const mark = marks.find((m) => m.mark < 50 && m.courseId.toString() === c.toString());
+      if (mark) {
+        return true;
+      }
+      return !marks.find(m => m.courseId.toString() === c.toString());
+    });
+
+    const availableCourses = await this.courseModel.find({
+      _id: { $in: failedOrEmptyCourseIds },
+    }).exec();
+
+    return availableCourses;
+  } catch (error) {
+    console.error('Error in getAvaiableOpenCourseForStudent:', error);
+    throw new Error('Failed to get available courses for the student');
+  }
+}
+
 
 }
