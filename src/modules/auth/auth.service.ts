@@ -50,8 +50,7 @@ export class AuthService {
             const salt = await bcrypt.genSalt(10);
             const hashPassword = await bcrypt.hash(student.password, salt);
             student.password = hashPassword;
-
-            const newStudent = await this.studentModel.create(student);
+            const newStudent = await this.studentModel.create({...student,academicStatus:student.year});
             return await newStudent.save();
         } catch (error) {
             if (error instanceof ConflictException) {

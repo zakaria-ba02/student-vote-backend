@@ -154,7 +154,7 @@ export class MarkService {
                 .exec();
 
             if (!marks || marks.length === 0) {
-                throw new BadRequestException(`No marks found for student ID: ${studentId}`);
+                return [];
             }
 
             return marks.map(mark => ({

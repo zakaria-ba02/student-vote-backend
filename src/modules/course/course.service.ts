@@ -150,11 +150,13 @@ export class CourseService {
 
     async getAvaiableOpenCourseForStudent(year: YearEnum, studentId: string) {
   try {
+    console.log(year);
+    
     const courses = await this.courseModel.find({
       year: { $lte: year },
       isOpen: true,
     }).exec();
-
+    
     const courseIds = courses.map(c => c._id);
 
     const marks = await this.markModel.find({
