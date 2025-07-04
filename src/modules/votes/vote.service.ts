@@ -16,63 +16,111 @@ export class VoteService {
     ) { }
 
     async createVote(createDto: CreatVoteDto, studentId: string) {
-        try {
-            const courseIds = createDto.courseIds;
+    try {
+        const courseIds = createDto.courseIds;
 
-            if (!Array.isArray(courseIds) || courseIds.length < 1 || courseIds.length > 7) {
-                throw new BadRequestException("You must vote for at least 1 and at most 7 courses.");
+        if (!Array.isArray(courseIds) || courseIds.length < 1 || courseIds.length > 7) {
+            throw new BadRequestException("You must vote for at least 1 and at most 7 courses.");
+        }
+
+        const objectIds = courseIds.map(id => new Types.ObjectId(id));
+
+        // جلب الكورسات مع المتطلبات
+        const courses = await this.courseModel.find({
+            _id: { $in: objectIds },
+            isVotingOpen: true
+        }).populate('prerequisites');
+
+        if (courses.length !== courseIds.length) {
+            throw new BadRequestException("One or more courses not found or not open for voting.");
+        }
+
+        const now = new Date();
+        now.setDate(now.getDate() + 1);
+
+        function isCourse(obj: any): obj is Course {
+            return obj && typeof obj.name === 'string' && obj._id;
+        }
+
+        for (const course of courses) {
+            if (!course.votingStart || !course.votingEnd || now < course.votingStart || now > course.votingEnd) {
+                throw new BadRequestException(`Voting is not currently open for course ${course._id}`);
             }
 
-            // Fetch all relevant courses
-            const objectIds = courseIds.map(id => new Types.ObjectId(id));
-            const courses = await this.courseModel.find({
-                _id: { $in: objectIds },
-                // isOpen: true,
-                isVotingOpen: true
+            const existingVote = await this.voteModel.findOne({
+                studentId,
+                courseId: course._id,
+                createdAt: {
+                    $gte: new Date(course.votingStart.getTime() - 24 * 60 * 60 * 1000),
+                    $lte: course.votingEnd
+                }
             });
 
-            if (courses.length !== courseIds.length) {
-                throw new BadRequestException("One or more courses not found or not open for voting.");
+            if (existingVote) {
+                throw new ConflictException(`Already voted for course ${course._id}`);
             }
 
-            const now = new Date();
-            now.setDate(now.getDate() + 1);
-            for (const course of courses) {
-                
-                if (!course.votingStart || !course.votingEnd || now < course.votingStart || now > course.votingEnd) {
-                    throw new BadRequestException(`Voting is not currently open for course ${course._id}`);
-                }
-
-                const existingVote = await this.voteModel.findOne({
-                    studentId: studentId,
-                    courseId: course._id.toString(),
-                    createdAt: { $gte: course.votingStart.setDate(course.votingStart.getDate()-1), $lte: course.votingEnd }
-                });
-                console.log("THIS IS AN EXISTING VOTES",existingVote);
-                
-                const mark = await this.markModel.findOne({ studentId, courseId: course._id.toString() })
-                if (mark && mark.mark >= 50) {
-                    throw new ConflictException(`Already passed for this course ${course._id}`);
-                } else if (existingVote) {
-                    throw new ConflictException(`Already voted for course ${course._id}`);
-                }
-
+            const mark = await this.markModel.findOne({ studentId, courseId: course._id });
+            if (mark && mark.mark >= 50) {
+                throw new ConflictException(`Already passed for this course ${course._id}`);
             }
 
-            // Create votes
-            const votesToCreate = courseIds.map(courseId => ({
-                courseId,
-                studentId
-            }));
+            // 🔷 التحقق من المتطلبات
+            if (course.prerequisites && course.prerequisites.length > 0) {
+                for (const prereq of course.prerequisites) {
+                    let prereqId: string;
+                    let prereqName: string;
 
-            await this.voteModel.insertMany(votesToCreate);
+                    if (isCourse(prereq)) {
+                        prereqId = prereq._id.toString();
+                        prereqName = prereq.name;
+                    } else {
+                        prereqId = prereq.toString();
+                        prereqName = prereqId;
+                    }
 
-            return { message: "Votes submitted successfully" };
+                    // 🔷 fallback لو كانت قيمة خاطئة (courseCode بدلاً من ObjectId)
+                    if (!Types.ObjectId.isValid(prereqId)) {
+                        const courseByCode = await this.courseModel.findOne({ courseCode: prereqId });
+                        if (!courseByCode) {
+                            throw new BadRequestException(`Invalid prerequisite course ID or code: ${prereqId}`);
+                        }
+                        prereqId = courseByCode._id.toString();
+                        prereqName = courseByCode.name;
+                    }
 
-        } catch (error) {
-            throw error;
+                    const prereqMark = await this.markModel.findOne({
+                        studentId,
+                        courseId: prereqId
+                    });
+
+                    if (!prereqMark || prereqMark.mark < 50) {
+                        throw new ConflictException(
+                            `Prerequisite course ${prereqName} not passed with sufficient mark.`
+                        );
+                    }
+                }
+            }
         }
+
+        const votesToCreate = courseIds.map(courseId => ({
+            courseId,
+            studentId
+        }));
+
+        await this.voteModel.insertMany(votesToCreate);
+
+        return { message: "Votes submitted successfully" };
+
+    } catch (error) {
+        console.error('Error in createVote:', error);
+        throw error;
     }
+}
+
+
+
+
 
     async getAllVote() {
         try {
