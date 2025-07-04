@@ -83,7 +83,7 @@ export class VoteService {
                     if (!Types.ObjectId.isValid(prereqId)) {
                         const courseByCode = await this.courseModel.findOne({ courseCode: prereqId });
                         if (!courseByCode) {
-                            throw new BadRequestException(`يجب اجتياز هذه المادة قبل: ${prereqId}`);
+                            throw new BadRequestException(`Invalid prerequisite course ID or code: ${prereqId}`);
                         }
                         prereqId = courseByCode._id.toString();
                         prereqName = courseByCode.name;
@@ -96,7 +96,7 @@ export class VoteService {
 
                     if (!prereqMark || prereqMark.mark < 50) {
                         throw new ConflictException(
-                            `Prerequisite course ${prereqName} not passed with sufficient mark.`
+                            `لم يجتز الطالب المتطلب السابق "${prereqName}" بالعلامة الكافية.`
                         );
                     }
                 }
